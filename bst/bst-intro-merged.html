@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary Trees and BSTs — CS2C</title>
+  <style>
+    /* ── Custom Properties ───────────────────────────────────── */
+    :root {
+      --color-primary:       #1a3a5c;
+      --color-primary-dark:  #122844;
+      --color-indigo:        #312e81;
+      --color-accent:        #2b7a78;
+      --color-accent-light:  #e8f4f3;
+      --color-bg:            #f1f5f9;
+      --color-card:          #ffffff;
+      --color-text:          #2d3748;
+      --color-text-muted:    #64748b;
+      --color-border:        #e2e8f0;
+      --color-code-bg:       #edf2f7;
+      --color-code-text:     #c05621;
+      --color-pre-bg:        #0f172a;
+      --color-pre-text:      #86efac;
+      --color-green-bg:      #f0fdf4;
+      --color-green-text:    #166534;
+      --color-red-bg:        #fef2f2;
+      --color-red-text:      #991b1b;
+      --color-warn-bg:       #fef2f2;
+      --color-warn-border:   #fca5a5;
+      --color-type-card-bg:  #eff6ff;
+      --color-type-card-brd: #bfdbfe;
+      --color-type-card-hd:  #1e3a8a;
+      --shadow-card:         0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.07);
+      --radius:              10px;
+      --radius-sm:           6px;
+      --font-body:           'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-mono:           'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace;
+    }
+
+    /* ── Reset & Base ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 1.5rem 1rem 3rem;
+      background: var(--color-bg);
+      font-family: var(--font-body);
+      color: var(--color-text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Page Wrapper ────────────────────────────────────────── */
+    .page-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+    }
+
+    /* ── Gradient Header ─────────────────────────────────────── */
+    .page-header {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-indigo) 100%);
+      color: #fff;
+      padding: 2.5rem 2.5rem 2rem;
+    }
+
+    .page-header .course-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #bfdbfe;
+      margin-bottom: 0.75rem;
+    }
+
+    .page-header h1 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #fff;
+    }
+
+    .page-header .subtitle {
+      margin: 0;
+      font-size: 1rem;
+      color: #bfdbfe;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    /* ── Main Content Area ───────────────────────────────────── */
+    .content {
+      background: var(--color-bg);
+      padding: 1.75rem 1.75rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* ── Section Cards ───────────────────────────────────────── */
+    .section-card {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: 1.75rem 2rem;
+      border-top: 4px solid var(--color-accent);
+    }
+
+    .section-card h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0 0 0.25rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .section-card > p:first-of-type {
+      margin-top: 0.85rem;
+    }
+
+    .section-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-accent);
+      margin: 1.5rem 0 0.6rem;
+      padding-bottom: 0.2rem;
+      border-bottom: 1px dashed var(--color-border);
+    }
+
+    /* ── Tree Type 2x2 Grid ──────────────────────────────────── */
+    .tree-type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin: 0.75rem 0 1rem;
+    }
+
+    .tree-type-card {
+      background: var(--color-type-card-bg);
+      border: 1px solid var(--color-type-card-brd);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1rem;
+      transition: box-shadow 0.15s ease;
+    }
+
+    .tree-type-card:hover {
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+
+    .tree-type-card h4 {
+      margin: 0 0 0.35rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--color-type-card-hd);
+    }
+
+    .tree-type-card p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Definition Box ──────────────────────────────────────── */
+    .definition-box {
+      background: var(--color-accent-light);
+      border-left: 4px solid var(--color-accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.9rem 1.2rem;
+      margin: 0.75rem 0 1rem;
+    }
+
+    .definition-box ul {
+      margin: 0;
+      padding-left: 1.3rem;
+    }
+
+    .definition-box li {
+      margin-bottom: 0.3rem;
+    }
+
+    .definition-box .note {
+      margin: 0.6rem 0 0;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    /* ── Complexity Table ────────────────────────────────────── */
+    .complexity-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1rem;
+      font-size: 0.92rem;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .complexity-table th {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 0.65rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .complexity-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .complexity-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .complexity-table .op-name {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .complexity-table .good {
+      background: var(--color-green-bg);
+      color: var(--color-green-text);
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    .complexity-table .bad {
+      background: var(--color-red-bg);
+      color: var(--color-red-text);
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    /* ── Warning Callout ─────────────────────────────────────── */
+    .warning-callout {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      background: var(--color-warn-bg);
+      border: 1px solid var(--color-warn-border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      font-size: 0.9rem;
+      color: #7f1d1d;
+      margin-top: 0.25rem;
+    }
+
+    .warning-callout .warn-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    /* ── Tree Diagram pre/code ───────────────────────────────── */
+    pre.tree-diagram {
+      background: var(--color-pre-bg);
+      color: var(--color-pre-text);
+      border-radius: var(--radius-sm);
+      padding: 1.2rem 1.5rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      margin: 0.75rem 0 1.25rem;
+    }
+
+    pre.tree-diagram code {
+      background: none;
+      color: inherit;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* ── Traversal Section Labels ────────────────────────────── */
+    .traversal-section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin: 0 0 0.65rem;
+    }
+
+    /* ── Traversal 3-col Grid ────────────────────────────────── */
+    .traversal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Traversal Cards ─────────────────────────────────────── */
+    .traversal-card {
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      position: relative;
+      background: var(--color-card);
+    }
+
+    .traversal-card h4 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .traversal-card .most-common-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #fbbf24;
+      color: #78350f;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 0 var(--radius-sm) 0 var(--radius-sm);
+      text-transform: uppercase;
+    }
+
+    /* ── Traversal Flow Pills ────────────────────────────────── */
+    .traversal-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      background: var(--color-bg);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-sm);
+      justify-content: center;
+    }
+
+    .node-pill {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 0.12rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .node-pill.active {
+      background: var(--color-accent);
+    }
+
+    .traversal-flow .arrow {
+      color: var(--color-text-muted);
+      font-size: 0.75rem;
+    }
+
+    /* ── Use Case + Result inside traversal card ─────────────── */
+    .traversal-card .use-case {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      flex-grow: 1;
+      line-height: 1.45;
+    }
+
+    .traversal-card .result-box {
+      background: #f8fafc;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--color-text);
+      word-break: break-word;
+    }
+
+    /* ── Level-order Full-width Card ─────────────────────────── */
+    .level-order-card {
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      background: var(--color-card);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 1.5rem;
+      align-items: start;
+    }
+
+    .level-order-card h4 {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      grid-column: 1 / -1;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .level-order-card .use-case {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .level-order-card .result-area {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .level-order-card .result-box {
+      background: #f8fafc;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--color-text);
+    }
+
+    .level-order-card .queue-note {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    /* ── Inline Code ─────────────────────────────────────────── */
+    code {
+      background: var(--color-code-bg);
+      color: var(--color-code-text);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.87em;
+    }
+
+    pre code {
+      background: none;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* ── Operations 3-col Grid ───────────────────────────────── */
+    .ops-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+
+    .op-card {
+      background: var(--color-accent-light);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+    }
+
+    .op-card h4 {
+      margin: 0 0 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--color-accent);
+    }
+
+    .op-card p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .op-card ol {
+      margin: 0.4rem 0 0;
+      padding-left: 1.2rem;
+      font-size: 0.82rem;
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    /* ── Info Callout ────────────────────────────────────────── */
+    .info-callout {
+      background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-indigo) 100%);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+
+    .info-callout p {
+      margin: 0 0 0.4rem;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .info-callout .sub {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #bfdbfe;
+      font-weight: 400;
+    }
+
+    /* ── Lists ───────────────────────────────────────────────── */
+    ul, ol {
+      padding-left: 1.4rem;
+      margin: 0.4rem 0 0.75rem;
+    }
+
+    li { margin-bottom: 0.3rem; }
+
+    /* ── Footer ────────────────────────────────────────────────── */
+    .page-footer {
+      background: var(--color-primary-dark);
+      color: #94a3b8;
+      text-align: center;
+      padding: 0.85rem 1.5rem;
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+
+    .page-footer a {
+      color: #bfdbfe;
+      text-decoration: none;
+    }
+
+    .page-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .traversal-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ops-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .level-order-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-header {
+        padding: 1.75rem 1.25rem 1.5rem;
+      }
+
+      .content {
+        padding: 1rem;
+      }
+
+      .section-card {
+        padding: 1.25rem;
+      }
+
+      .tree-type-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Binary Trees and<br>Binary Search Trees (BSTs)</h1>
+      <p class="subtitle">
+        A foundational hierarchical data structure enabling efficient searching,
+        sorting, and dynamic data management.
+      </p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: Binary Trees ──────────────────────────── -->
+      <section class="section-card" id="binary-trees">
+        <h2>What is a Binary Tree?</h2>
+        <p>
+          A <strong>Binary Tree</strong> is a hierarchical data structure in which each node has
+          at most two children, referred to as the <strong>left child</strong> and the
+          <strong>right child</strong>. Binary trees are a fundamental concept in computer science
+          and serve as the structural foundation for many specialized variants, including
+          Binary Search Trees (BSTs), AVL Trees, and Heaps.
+        </p>
+
+        <h3>Types of Binary Trees</h3>
+        <div class="tree-type-grid">
+          <div class="tree-type-card">
+            <h4>Full Binary Tree</h4>
+            <p>Every node has either exactly 0 or 2 children. No node has only one child.</p>
+          </div>
+          <div class="tree-type-card">
+            <h4>Complete Binary Tree</h4>
+            <p>All levels are completely filled except possibly the last, which is filled
+               sequentially from left to right. <em>(Crucial for Heaps!)</em></p>
+          </div>
+          <div class="tree-type-card">
+            <h4>Perfect Binary Tree</h4>
+            <p>All internal nodes have exactly two children, and all leaf nodes are at the
+               same depth level.</p>
+          </div>
+          <div class="tree-type-card">
+            <h4>Binary Search Tree (BST)</h4>
+            <p>A binary tree enforcing a specific ordering property for efficient lookups
+               (discussed below).</p>
+          </div>
+        </div>
+
+        <h3>Common Applications</h3>
+        <ul>
+          <li><strong>Expression Trees:</strong> Representing arithmetic expressions where
+              leaves are operands and internal nodes are operators.</li>
+          <li><strong>Decision Trees:</strong> Used in machine learning for classification
+              and regression tasks.</li>
+          <li><strong>Heaps:</strong> A specialized complete binary tree used in priority
+              queues and heap sort &mdash; we will revisit and implement a min-heap later
+              in the course!</li>
+          <li><strong>Binary Search Trees (BSTs):</strong> Used for efficient searching,
+              insertion, and deletion operations.</li>
+        </ul>
+      </section>
+
+      <!-- ── Section 2: BSTs ───────────────────────────────────── -->
+      <section class="section-card" id="bst">
+        <h2>What is a Binary Search Tree?</h2>
+        <p>
+          A <strong>Binary Search Tree (BST)</strong> is a specialized binary tree in which nodes
+          are organized according to the following ordering property:
+        </p>
+
+        <div class="definition-box">
+          <ul>
+            <li>All values in the <strong>left subtree</strong> of a node are
+                <strong>less than</strong> that node's value.</li>
+            <li>All values in the <strong>right subtree</strong> of a node are
+                <strong>greater than</strong> that node's value.</li>
+            <li>This property applies <strong>recursively</strong> to every node in the tree,
+                not just to immediate children.</li>
+          </ul>
+          <p class="note">
+            Note: Standard BSTs do not allow duplicate values. Each key must be unique in the tree.
+          </p>
+        </div>
+
+        <h3>Why Do We Need BSTs?</h3>
+        <p>BSTs are particularly useful when you need to maintain a dynamically changing dataset
+           and perform frequent searches. Real-world applications include database indexing,
+           file systems, and autocomplete features in search engines.</p>
+
+        <h3>Time Complexity of Common Operations</h3>
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Average Case (Balanced)</th>
+              <th>Worst Case (Unbalanced)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op-name">Search</td>
+              <td class="good">O(log n)</td>
+              <td class="bad">O(n)</td>
+            </tr>
+            <tr>
+              <td class="op-name">Insertion</td>
+              <td class="good">O(log n)</td>
+              <td class="bad">O(n)</td>
+            </tr>
+            <tr>
+              <td class="op-name">Deletion</td>
+              <td class="good">O(log n)</td>
+              <td class="bad">O(n)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="warning-callout">
+          <span class="warn-icon">&#9888;</span>
+          <span>
+            <strong>The Worst-Case Scenario:</strong> O(n) occurs when values are inserted
+            in sorted order (e.g., 1, 2, 3, 4, 5), causing the BST to degenerate into a
+            structure that resembles a linked list with no branching. We will solve this
+            problem later in the course with <strong>self-balancing trees</strong>!
+          </span>
+        </div>
+      </section>
+
+      <!-- ── Section 3: Traversals ─────────────────────────────── -->
+      <section class="section-card" id="traversals">
+        <h2>Tree Traversals</h2>
+        <p>
+          Tree traversal is the process of visiting every node in a tree exactly once, in a
+          defined order. The three depth-first traversals differ in <em>when</em> the current
+          node is visited relative to its subtrees. The following BST is used throughout
+          this section:
+        </p>
+
+        <pre class="tree-diagram"><code>      8
+     / \
+    3   10
+   / \    \
+  1   6    14
+     / \   /
+    4   7 13</code></pre>
+
+        <div class="traversal-section-label">Depth-First Traversals</div>
+
+        <div class="traversal-grid">
+
+          <!-- Pre-order -->
+          <div class="traversal-card">
+            <h4>1. Pre-order</h4>
+            <div class="traversal-flow">
+              <span class="node-pill active">Node</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill">Left</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill">Right</span>
+            </div>
+            <p class="use-case">
+              Visit the current node <em>before</em> traversing its subtrees.<br>
+              <strong>Use cases:</strong> Creating a copy of the tree; prefix expression notation.
+            </p>
+            <div class="result-box">8, 3, 1, 6, 4, 7, 10, 14, 13</div>
+          </div>
+
+          <!-- In-order -->
+          <div class="traversal-card">
+            <span class="most-common-badge">Most Common</span>
+            <h4>2. In-order</h4>
+            <div class="traversal-flow">
+              <span class="node-pill">Left</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill active">Node</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill">Right</span>
+            </div>
+            <p class="use-case">
+              Visit the current node <em>between</em> its subtrees.<br>
+              <strong>Use cases:</strong> Produces nodes in <strong>sorted ascending order</strong>
+              for a BST.
+            </p>
+            <div class="result-box">1, 3, 4, 6, 7, 8, 10, 13, 14</div>
+          </div>
+
+          <!-- Post-order -->
+          <div class="traversal-card">
+            <h4>3. Post-order</h4>
+            <div class="traversal-flow">
+              <span class="node-pill">Left</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill">Right</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill active">Node</span>
+            </div>
+            <p class="use-case">
+              Visit the current node <em>after</em> both subtrees.<br>
+              <strong>Use cases:</strong> Deleting a tree (children freed before parent);
+              evaluating expression trees.
+            </p>
+            <div class="result-box">1, 4, 7, 6, 3, 13, 14, 10, 8</div>
+          </div>
+
+        </div>
+
+        <div class="traversal-section-label">Breadth-First Traversal</div>
+
+        <!-- Level-order -->
+        <div class="level-order-card">
+          <h4>4. Level-order (BFS)</h4>
+          <div class="use-case">
+            <p style="margin:0 0 0.4rem; font-size:0.85rem; color:var(--color-text);">
+              Process all nodes at the current depth level before advancing to the next,
+              visiting left to right within each level. Unlike the depth-first traversals
+              above, this requires a <strong>queue</strong> rather than recursion.
+            </p>
+            <p style="margin:0; font-size:0.85rem; color:var(--color-text-muted);">
+              <strong>Use cases:</strong> Serializing/deserializing a tree; finding the shortest
+              path in an unweighted tree; printing a tree level by level.
+            </p>
+          </div>
+          <div class="result-area">
+            <div class="traversal-flow" style="justify-content:flex-start;">
+              <span class="node-pill active">Level 0</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill">Level 1</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill">Level 2</span>
+              <span class="arrow">&#8594;</span>
+              <span class="node-pill">&#8230;</span>
+            </div>
+            <div class="result-box">8, 3, 10, 1, 6, 14, 4, 7, 13</div>
+            <p class="queue-note">Implemented using a queue (std::queue in C++).</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── Section 4: Recursive Operations ──────────────────── -->
+      <section class="section-card" id="operations">
+        <h2>Recursive Nature of Tree Operations</h2>
+        <p>
+          Because trees are inherently recursive structures &mdash; every subtree is itself a
+          valid BST &mdash; most operations on BSTs are most elegantly expressed using recursion.
+        </p>
+
+        <div class="ops-grid">
+
+          <div class="op-card">
+            <h4>Insertion</h4>
+            <ol>
+              <li>Start at the root.</li>
+              <li>Recursively move left (if smaller) or right (if larger) based on a comparison
+                  with the current node's value.</li>
+              <li>Insert the new node at the first empty (null) position encountered.</li>
+            </ol>
+          </div>
+
+          <div class="op-card">
+            <h4>Search</h4>
+            <ol>
+              <li>Compare the target value to the current node.</li>
+              <li>If equal, the search is complete.</li>
+              <li>If the target is less, recurse into the left subtree; if greater, recurse
+                  into the right subtree.</li>
+            </ol>
+          </div>
+
+          <div class="op-card">
+            <h4>Deletion</h4>
+            <ol>
+              <li><strong>Leaf node</strong> &mdash; simply remove it.</li>
+              <li><strong>One child</strong> &mdash; replace the node with its single child.</li>
+              <li><strong>Two children</strong> &mdash; replace the node's value with its
+                  <strong>in-order successor</strong> (the leftmost node in its right subtree),
+                  then delete that successor.</li>
+            </ol>
+          </div>
+
+        </div>
+
+        <div class="info-callout">
+          <p>Coming up in this week&#8217;s project&hellip;</p>
+          <p class="sub">
+            You will implement these insertion, deletion,
+            and search algorithms for a BST in <strong>prj04</strong>.
+          </p>
+        </div>
+
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson, Foothill College.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.
+    </footer>
+
+  </div>
+
+</body>
+</html>

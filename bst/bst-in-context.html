@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSTs in Context — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>BSTs in Context:<br>Comparing Data Structures</h1>
+      <p class="subtitle">
+        Time complexity and memory trade-offs across vectors, linked lists,
+        and binary search trees.
+      </p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: Overview ─────────────────────────────── -->
+      <section class="section-card">
+        <h2>Data Structures at a Glance</h2>
+        <p>A quick recap of the three structures before comparing them:</p>
+        <div class="ops-grid">
+          <div class="op-card">
+            <h4>Vectors</h4>
+            <p>Contiguous, resizable arrays. Elements are stored in adjacent memory
+               locations. In C++: <code>std::vector</code>.</p>
+          </div>
+          <div class="op-card">
+            <h4>Linked Lists</h4>
+            <p>Chains of nodes connected by pointers. Each node holds data and a link
+               to its neighbor(s). In C++: <code>std::list</code> (doubly-linked).</p>
+          </div>
+          <div class="op-card">
+            <h4>Binary Search Trees</h4>
+            <p>Hierarchical structure where each node has at most two children. All
+               values in the left subtree are less than the node; all values in the
+               right subtree are greater.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Section 2: Time Complexity Table ───────────────── -->
+      <section class="section-card">
+        <h2>Time Complexity Comparison</h2>
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Vector</th>
+              <th>Linked List</th>
+              <th>BST (avg / worst)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op-name">Access by Index</td>
+              <td class="good">O(1)</td>
+              <td class="bad">O(n)</td>
+              <td>N/A</td>
+            </tr>
+            <tr>
+              <td class="op-name">Search by Value</td>
+              <td>O(n) unsorted<br>O(log n) sorted</td>
+              <td class="bad">O(n)</td>
+              <td>O(log n) / O(n) *</td>
+            </tr>
+            <tr>
+              <td class="op-name">Insert at Beginning</td>
+              <td class="bad">O(n)</td>
+              <td class="good">O(1)</td>
+              <td>N/A</td>
+            </tr>
+            <tr>
+              <td class="op-name">Insert at End</td>
+              <td class="good">O(1) amortized</td>
+              <td>O(1) with tail ptr</td>
+              <td>N/A</td>
+            </tr>
+            <tr>
+              <td class="op-name">Insert (ordered position)</td>
+              <td class="bad">O(n)</td>
+              <td>O(1) after find<br>O(n) total</td>
+              <td>O(log n) / O(n)</td>
+            </tr>
+            <tr>
+              <td class="op-name">Delete at Beginning</td>
+              <td class="bad">O(n)</td>
+              <td class="good">O(1)</td>
+              <td>N/A</td>
+            </tr>
+            <tr>
+              <td class="op-name">Delete at End</td>
+              <td class="good">O(1)</td>
+              <td>O(1) with tail ptr</td>
+              <td>N/A</td>
+            </tr>
+            <tr>
+              <td class="op-name">Delete by Value</td>
+              <td class="bad">O(n)</td>
+              <td>O(1) after find<br>O(n) total</td>
+              <td>O(log n) / O(n)</td>
+            </tr>
+            <tr>
+              <td class="op-name">In-order Traversal</td>
+              <td>O(n)</td>
+              <td>O(n)</td>
+              <td class="good">O(n) — sorted output</td>
+            </tr>
+            <tr>
+              <td class="op-name">Memory per Element</td>
+              <td class="good">Low — data only</td>
+              <td>Medium–High<br>data + 1–2 pointers</td>
+              <td class="bad">High<br>data + 2 pointers</td>
+            </tr>
+            <tr>
+              <td class="op-name">Cache Performance</td>
+              <td class="good">Excellent</td>
+              <td class="bad">Poor</td>
+              <td class="bad">Poor</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="warning-callout">
+          <span class="warn-icon">⚠</span>
+          <span>* BST O(log n) average assumes a <strong>balanced</strong> tree.
+            A degenerate BST — produced, for example, by inserting already-sorted values —
+            degrades to a linked list with O(n) for all operations.</span>
+        </div>
+      </section>
+
+      <!-- ── Section 3: Operation Details ───────────────────── -->
+      <section class="section-card">
+        <h2>Operation Details</h2>
+
+        <h3>Vectors</h3>
+        <p><strong>Access by index: O(1).</strong> Elements are contiguous in memory,
+        so any element is reachable via a single pointer offset — no traversal needed.</p>
+        <pre class="tree-diagram"><code>int element = vec[5];           // O(1) — direct address calculation</code></pre>
+
+        <p><strong>Insertion and deletion:</strong></p>
+        <ul>
+          <li>At the beginning or middle: O(n) — all subsequent elements must shift to fill the gap.</li>
+          <li>At the end: O(1) amortized — capacity doubles on reallocation, so the average cost per push is constant.</li>
+        </ul>
+        <pre class="tree-diagram"><code>vec.push_back(value);              // O(1) amortized
+vec.insert(vec.begin(), value);    // O(n) — shifts every element right</code></pre>
+
+        <p><strong>Search:</strong></p>
+        <ul>
+          <li>Unsorted: O(n) linear scan.</li>
+          <li>Sorted: O(log n) with <code>std::lower_bound</code>.</li>
+        </ul>
+        <pre class="tree-diagram"><code>auto it = std::find(vec.begin(), vec.end(), value);        // O(n)
+auto it = std::lower_bound(vec.begin(), vec.end(), value); // O(log n) — sorted only</code></pre>
+
+        <h3>Linked Lists</h3>
+        <p><strong>Access by index: O(n).</strong> No random access — must traverse from
+        the head (or tail) one node at a time.</p>
+        <pre class="tree-diagram"><code>auto it = std::next(list.begin(), n);  // O(n) — traverses n links</code></pre>
+
+        <p><strong>Insertion and deletion:</strong></p>
+        <ul>
+          <li>At the beginning or end: O(1) with head/tail pointers.</li>
+          <li>At a known iterator position: O(1) pointer rewiring.</li>
+          <li>Finding that position first: O(n).</li>
+        </ul>
+        <pre class="tree-diagram"><code>list.push_front(value);          // O(1)
+list.push_back(value);           // O(1)
+list.insert(pos_itr, value);     // O(1) once iterator is in hand</code></pre>
+
+        <p><strong>Search: O(n).</strong> Must traverse from the head with no shortcutting possible.</p>
+        <pre class="tree-diagram"><code>auto it = std::find(list.begin(), list.end(), value);  // O(n)</code></pre>
+
+        <h3>Binary Search Trees</h3>
+        <p>All three core operations — search, insert, delete — are <strong>O(log n) average</strong>
+        in a balanced tree and <strong>O(n) worst case</strong> in a degenerate (skewed) tree.</p>
+        <p>An <strong>in-order traversal</strong> visits all nodes in ascending sorted order in
+        O(n) — producing sorted output without an additional sort step.</p>
+
+        <div class="definition-box">
+          <p style="margin:0 0 0.4rem; font-weight:700; color:var(--color-accent);">STL Containers Backed by BSTs</p>
+          <p style="margin:0; font-size:0.9rem;">The C++ standard library implements
+            <code>std::map</code>, <code>std::set</code>, <code>std::multimap</code>, and
+            <code>std::multiset</code> as <strong>red-black trees</strong> — a self-balancing
+            BST variant that guarantees O(log n) for all operations.
+            See the next page in this module for usage examples.</p>
+        </div>
+      </section>
+
+      <!-- ── Section 4: Memory ──────────────────────────────── -->
+      <section class="section-card">
+        <h2>Memory Usage</h2>
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Data Structure</th>
+              <th>Memory per Element</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op-name">Vector</td>
+              <td class="good">sizeof(element) — data only</td>
+            </tr>
+            <tr>
+              <td class="op-name">Singly Linked List</td>
+              <td>sizeof(element) + sizeof(pointer)</td>
+            </tr>
+            <tr>
+              <td class="op-name">Doubly Linked List</td>
+              <td>sizeof(element) + 2 &times; sizeof(pointer)</td>
+            </tr>
+            <tr>
+              <td class="op-name">Binary Search Tree</td>
+              <td class="bad">sizeof(element) + 2 &times; sizeof(pointer)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Memory Locality and Cache Performance</h3>
+        <p>Memory layout often matters more than raw size. Modern CPUs load data in
+        <em>cache lines</em> — contiguous blocks fetched together. Structures that scatter
+        nodes across the heap defeat this mechanism:</p>
+        <ul>
+          <li><strong>Vectors:</strong> Excellent cache performance. Iterating a vector is
+            one of the fastest operations in practice because all data is contiguous and
+            prefetched efficiently.</li>
+          <li><strong>Linked Lists:</strong> Poor cache locality. Each node is a separate
+            heap allocation, so every traversal step likely causes a cache miss.</li>
+          <li><strong>BSTs:</strong> Also poor cache locality for the same reason —
+            pointer-chasing walks unpredictably through memory.</li>
+        </ul>
+        <p>This is why a sorted <code>std::vector</code> with binary search often
+        <em>outperforms</em> a BST in practice despite both being O(log n) for search —
+        the vector's cache behavior wins on real hardware.</p>
+      </section>
+
+      <!-- ── Section 5: Balanced vs Unbalanced ──────────────── -->
+      <section class="section-card">
+        <h2>Balanced vs. Unbalanced BSTs</h2>
+        <p>The O(log n) guarantee only holds when the tree stays balanced. Inserting
+        values in sorted order into a plain BST produces a degenerate tree — essentially
+        a linked list — and all operations degrade to O(n).</p>
+
+        <div class="warning-callout">
+          <span class="warn-icon">⚠</span>
+          <span>Inserting <code>1, 2, 3, 4, 5</code> in order into an unbalanced BST
+            produces a fully right-skewed tree of height n. Every operation becomes O(n).</span>
+        </div>
+
+        <p>Self-balancing variants restructure the tree automatically to maintain O(log n):</p>
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Unbalanced BST (worst case)</th>
+              <th>Balanced BST (AVL, Red-Black)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op-name">Search</td>
+              <td class="bad">O(n)</td>
+              <td class="good">O(log n)</td>
+            </tr>
+            <tr>
+              <td class="op-name">Insertion</td>
+              <td class="bad">O(n)</td>
+              <td class="good">O(log n)</td>
+            </tr>
+            <tr>
+              <td class="op-name">Deletion</td>
+              <td class="bad">O(n)</td>
+              <td class="good">O(log n)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>AVL trees and Red-Black trees will be covered in later modules.</p>
+      </section>
+
+      <!-- ── Section 6: Summary ─────────────────────────────── -->
+      <section class="section-card">
+        <h2>Summary</h2>
+        <p>Each structure has a clear niche:</p>
+        <ul>
+          <li><strong>Vectors</strong> — best for random access and cache-friendly iteration.
+            Prefer when you mostly read data or append to the end.</li>
+          <li><strong>Linked Lists</strong> — best for frequent insertion and deletion at known
+            positions. Poor choice for search or random access.</li>
+          <li><strong>BSTs</strong> — best when you need a dynamic, always-sorted collection
+            with efficient search, insert, and delete. The trade-off is higher memory overhead
+            and poor cache behavior compared to vectors.</li>
+        </ul>
+        <p>As always, the right choice depends on your workload: which operations are most
+        frequent, how large the data is, and whether cache performance matters for your
+        use case.</p>
+      </section>
+
+      <!-- ── Section 7: Lazy BST ────────────────────────────── -->
+      <section class="section-card">
+        <h2>Food for Thought: Lazy Deletion</h2>
+        <p>Standard BST deletion is the most complex of the three core operations.
+        What if we deferred the structural work?</p>
+
+        <div class="definition-box">
+          <p style="margin:0 0 0.4rem; font-weight:700; color:var(--color-accent);">Lazy Deletion</p>
+          <p style="margin:0; font-size:0.9rem;">Instead of structurally removing a node,
+            mark it as <em>deleted</em> with a boolean flag. The node stays in the tree.
+            A later insertion of the same value can reuse the node by simply clearing the flag.</p>
+        </div>
+
+        <p>Consider the trade-offs for a lazy BST:</p>
+        <ul>
+          <li><strong>Deletion:</strong> O(log n) — locate the node and set a flag; no pointer rewiring needed.</li>
+          <li><strong>Insertion:</strong> O(log n) — if the value already exists as a deleted node, reuse it; otherwise insert normally.</li>
+          <li><strong>Search:</strong> O(log n) — must check the deleted flag at each visited node to filter out "gone" values.</li>
+          <li><strong>Space:</strong> Deleted nodes remain in memory — the tree grows over time if deletions outpace reinsertions.</li>
+        </ul>
+
+        <div class="warning-callout">
+          <span class="warn-icon">⚠</span>
+          <span>Lazy deletion trades <strong>time</strong> for <strong>space</strong>.
+            If deleted nodes are never reinserted, memory usage grows without bound.
+            A real implementation needs a periodic rebuild or a threshold that triggers cleanup.</span>
+        </div>
+
+        <p>Think about: What condition triggers a full rebuild? How do you decide when
+        the cost of accumulated deleted nodes outweighs the savings from deferred deletion?</p>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson, Foothill College.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible.
+      Please raise questions in our course Q&amp;A &mdash; thank you!
+    </footer>
+
+  </div>
+
+</body>
+</html>

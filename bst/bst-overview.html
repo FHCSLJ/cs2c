@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 5 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Module 5 Overview:<br>Binary Search Trees</h1>
+      <p class="subtitle">
+        A foundational linked data structure offering efficient search,
+        insertion, and deletion — and a natural home for recursion.
+      </p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: What is a BST ───────────────────────── -->
+      <section class="section-card">
+        <h2>What We&rsquo;re Exploring This Module</h2>
+        <p>In this module we explore the <strong>binary search tree (BST)</strong> — a
+        simple, fundamental linked data structure that enables efficient searching,
+        insertion, and deletion with O(log n) average performance.</p>
+
+        <figure style="text-align:center; margin: 1.25rem 0 0.5rem;">
+          <img src="images/binary_tree_open.png"
+               alt="An arbitrary binary tree with each node pointing to zero, one, or two child nodes"
+               style="max-width:100%; border-radius:6px;">
+          <figcaption style="font-size:0.8rem; color:var(--color-text-muted); margin-top:0.5rem;">
+            Figure 1. Each node in a binary tree links to at most two children,
+            conventionally called the left and right child.
+            <em>Image credit: Open Data Structures (in C++).</em>
+          </figcaption>
+        </figure>
+
+        <div class="definition-box">
+          <p style="margin:0 0 0.4rem; font-weight:700; color:var(--color-accent);">The BST Invariant</p>
+          <p style="margin:0; font-size:0.9rem;">For any node in a BST, all values in its
+            <strong>left subtree</strong> are less than the node&rsquo;s value, and all values
+            in its <strong>right subtree</strong> are greater. This property holds for every
+            node at every level — not just the immediate children.</p>
+        </div>
+
+        <p>This invariant is what makes BSTs fast. Because the tree is organized by value,
+        a search never needs to examine both subtrees — at each node it takes a single
+        comparison to determine which direction to go, halving the remaining candidates
+        at each step. The result is O(log n) average time for search, insertion,
+        and deletion.</p>
+      </section>
+
+      <!-- ── Section 2: BSTs in Context ─────────────────────── -->
+      <section class="section-card">
+        <h2>How BSTs Compare</h2>
+        <p>BSTs sit in an interesting position relative to the data structures we&rsquo;ve
+        already seen:</p>
+        <ul>
+          <li><strong>Versus linked lists:</strong> Linked lists require O(n) for search,
+            insertion, and deletion (assuming no prior reference to the target position).
+            BSTs improve all three to O(log n) average by exploiting the ordering invariant.</li>
+          <li><strong>Versus vectors:</strong> Vectors offer O(1) random access but O(n)
+            for insertion and deletion in the middle. BSTs give up random access entirely
+            but provide O(log n) for all three core operations on dynamic, always-sorted data.</li>
+        </ul>
+        <div class="warning-callout">
+          <span class="warn-icon">⚠</span>
+          <span>The O(log n) guarantee only holds when the tree is <strong>balanced</strong>.
+            A BST that receives data in sorted order degenerates into a structure equivalent
+            to a linked list, and all operations fall back to O(n). We will look at strategies
+            to prevent this in future modules.</span>
+        </div>
+      </section>
+
+      <!-- ── Section 3: Recursion ────────────────────────────── -->
+      <section class="section-card">
+        <h2>BSTs and Recursion</h2>
+        <p>Time to dust off your recursive thinking — BSTs are one of the most natural
+        homes for recursive algorithms in all of data structures.</p>
+
+        <p>A BST is itself a <em>recursive data structure</em>: every node is the root of
+        its own subtree, and that subtree is itself a valid BST. This means BST operations
+        can be defined in terms of the same operation applied to a smaller subtree:</p>
+
+        <ul>
+          <li><strong>Search:</strong> compare the target value to the current node; recursively
+            search the left or right subtree depending on the result.</li>
+          <li><strong>Insertion:</strong> find the correct empty position by recursively
+            following the BST invariant, then attach a new node.</li>
+          <li><strong>Deletion:</strong> locate the node, handle the three structural cases,
+            and let recursion clean up the subtree.</li>
+        </ul>
+
+        <p>If that still sounds abstract, have no fear. By the end of this week&rsquo;s
+        project you will have implemented all three operations yourself and the recursive
+        structure will feel concrete and intuitive.</p>
+
+        <div class="info-callout">
+          <p>This week&rsquo;s project: <strong>prj04</strong></p>
+          <p class="sub">Implement insertion, deletion, and search for a BST — including
+            the lazy deletion variant. Recursion required.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+
+</body>
+</html>

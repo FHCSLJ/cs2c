@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualizing BST Performance — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Visualizing BST Performance</h1>
+      <p class="subtitle">
+        Empirically confirming the O(log n) time guarantee of
+        <code style="color:#bfdbfe; background:rgba(255,255,255,0.1);">std::set</code>
+        with a timing experiment.
+      </p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: Setup ────────────────────────────────── -->
+      <section class="section-card">
+        <h2>From Theory to Evidence</h2>
+        <p>As comfortable as we might be storing data in vectors or linked lists, we have
+        learned that those structures can be inefficient for search and dynamic management.
+        The C++ standard library addresses this with additional containers that carry
+        different performance guarantees.</p>
+
+        <p>One of these is <code>std::set</code> — an ordered container that does not allow
+        duplicates. It supports <code>insert()</code>, <code>erase()</code>, and
+        <code>find()</code>, works with familiar iterator idioms (<code>begin()</code>,
+        <code>end()</code>, range-based for), and the C++ standard mandates that these
+        operations run in <strong>O(log n)</strong> time. Most mainstream compilers implement
+        <code>std::set</code> with a red-black tree, a self-balancing BST variant.</p>
+
+        <div class="definition-box">
+          <p style="margin:0 0 0.3rem; font-weight:700; color:var(--color-accent);">The Challenge</p>
+          <p style="margin:0; font-size:0.9rem;">Can we <em>empirically confirm</em> the
+            O(log n) time guarantee? Let&rsquo;s run an experiment: time the insertion of
+            individual elements into a <code>std::set</code> as the set grows, and plot
+            runtime against N.</p>
+        </div>
+
+        <div class="definition-box">
+          <p style="margin:0 0 0.3rem; font-weight:700; color:var(--color-accent);">Try it yourself first</p>
+          <p style="margin:0; font-size:0.9rem;">Time and interest permitting, give this a shot in our
+            course Codespace playground before revealing the code and plots below.</p>
+          <p style="margin:0.5rem 0 0; font-size:0.85rem; color:var(--color-text-muted);">
+            FYI: the example below outputs CSV data to the terminal and to a file, and uses
+            <a href="https://www.desmos.com/calculator" target="_blank" rel="noopener noreferrer">Desmos</a>
+            to visualize the results.</p>
+        </div>
+      </section>
+
+      <!-- ── Section 2: Code reveal ──────────────────────────── -->
+      <section class="section-card">
+        <h2>The Experiment</h2>
+
+        <details class="reveal-block">
+          <summary>Show the timing code</summary>
+          <div class="reveal-content">
+            <pre class="tree-diagram"><code>#include &lt;chrono&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;random&gt;
+#include &lt;set&gt;
+
+int main()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution&lt;long&gt; dis(
+        std::numeric_limits&lt;long&gt;::min(),
+        std::numeric_limits&lt;long&gt;::max()
+    );
+
+    std::set&lt;long&gt; experiment_set;
+
+    const std::string FILENAME = "set_complexity_results.csv";
+    std::ofstream file(FILENAME, std::ios::app);
+    if (!file.is_open())
+    {
+        std::cerr &lt;&lt; "Unable to open file: " &lt;&lt; FILENAME &lt;&lt; std::endl;
+    }
+
+    const long STOP = 100000;
+    const long STEP = STOP / 10000;
+
+    for (long n = 0; n &lt; STOP; ++n)
+    {
+        long random_number = dis(gen);
+
+        auto start_time = std::chrono::high_resolution_clock::now();
+        experiment_set.insert(random_number);
+        auto end_time = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration&lt;double&gt; duration = end_time - start_time;
+
+        if (n % STEP == 0)
+        {
+            std::cout &lt;&lt; n &lt;&lt; ", "
+                      &lt;&lt; std::fixed
+                      &lt;&lt; std::setprecision(15)
+                      &lt;&lt; duration.count()
+                      &lt;&lt; std::endl;
+
+            file &lt;&lt; n &lt;&lt; ", "
+                 &lt;&lt; std::fixed
+                 &lt;&lt; std::setprecision(15)
+                 &lt;&lt; duration.count()
+                 &lt;&lt; std::endl;
+        }
+    }
+}</code></pre>
+            <p style="font-size:0.85rem; color:var(--color-text-muted); margin-top:0.5rem;">
+              This version of the program inserts 100,000 random <code>long</code> values into a
+              <code>std::set</code>, timing each individual insertion. Every 10 insertions
+              it logs N and the insertion time to both stdout and a CSV file for plotting,
+              producing 10,000 data points in total, and, of course, these values are configurable.
+            </p>
+          </div>
+        </details>
+
+        <details class="reveal-block">
+          <summary>Show the plots</summary>
+          <div class="reveal-content">
+            <p style="font-size:0.9rem; margin-bottom:1rem;">
+              Here are four views of the same data. Can you reproduce these?
+            </p>
+
+            <figure style="margin: 0 0 1.5rem;">
+              <img src="images/set_plot1.png"
+                   alt="Scatter plot of std::set insertion time vs N, showing overall trend"
+                   style="max-width:100%; border-radius:var(--radius-sm); border:1px solid var(--color-border);">
+            </figure>
+
+            <figure style="margin: 0 0 1.5rem;">
+              <img src="images/set_plot2.png"
+                   alt="Scatter plot zoomed in, showing logarithmic growth more clearly"
+                   style="max-width:100%; border-radius:var(--radius-sm); border:1px solid var(--color-border);">
+            </figure>
+
+            <figure style="margin: 0 0 1.5rem;">
+              <img src="images/set_plot3.png"
+                   alt="Further zoomed scatter plot of insertion time vs N"
+                   style="max-width:100%; border-radius:var(--radius-sm); border:1px solid var(--color-border);">
+            </figure>
+
+            <figure style="margin: 0 0 0.5rem;">
+              <img src="images/set_plot4.png"
+                   alt="Final zoomed scatter plot of insertion time vs N"
+                   style="max-width:100%; border-radius:var(--radius-sm); border:1px solid var(--color-border);">
+            </figure>
+
+            <div class="warning-callout" style="margin-top:1rem;">
+              <span class="warn-icon">⚠</span>
+              <span>Individual timing measurements are noisy — OS scheduling, cache state,
+                and memory allocation all introduce spikes. The <em>trend</em> across
+                many measurements is what matters, not any single data point.</span>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- ── Section 3: Takeaway ─────────────────────────────── -->
+      <section class="section-card">
+        <h2>What the Data Shows</h2>
+        <p>The plots confirm what the standard guarantees: insertion time into
+        <code>std::set</code> grows logarithmically with N. As the set doubles in size,
+        the average insertion cost increases by only a small constant amount, the
+        hallmark of O(log n) behavior.</p>
+
+        <p>Notice also the absolute scale of the y-axis. Individual insertions are
+        extremely fast in practice, even as N reaches 100,000. This is why logarithmic
+        complexity is so valuable for dynamic data: the performance degrades so slowly
+        that even very large collections remain responsive.</p>
+
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+
+</body>
+</html>

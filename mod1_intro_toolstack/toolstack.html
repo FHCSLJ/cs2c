@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Toolstack — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>The Toolstack</h1>
+      <p class="subtitle">
+        The tools, platforms, and environment we use to develop C++ professionally
+        throughout this course.
+      </p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: What You Need ───────────────────────── -->
+      <section class="section-card">
+        <h2>What You Need to Develop C++</h2>
+        <p>In this module, we will familiarize ourselves with what we might call the
+        toolstack for the course. Developing C++ professionally isn&rsquo;t just a compiler
+        and a text editor — there are several layers involved, and each one has a job:</p>
+
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>What you need</th>
+              <th>What we use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>A machine to work on</td>
+              <td>Your machine + a Linux virtual machine via
+                <a href="https://github.com/features/codespaces" target="_blank" rel="noopener noreferrer">GitHub Codespaces</a></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>An editor or IDE to write source code</td>
+              <td><a href="https://code.visualstudio.com/" target="_blank" rel="noopener noreferrer">VSCode</a>,
+                running inside the Codespace</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>A compiler (+ assembler and linker) to produce an executable</td>
+              <td><a href="https://gcc.gnu.org/" target="_blank" rel="noopener noreferrer">g++</a></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>A build system to manage compilation details</td>
+              <td><a href="https://www.gnu.org/software/make/" target="_blank" rel="noopener noreferrer">make</a></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>A build system generator to manage the build system</td>
+              <td><a href="https://cmake.org/" target="_blank" rel="noopener noreferrer">CMake</a></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Version control to track files and history</td>
+              <td><a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer">Git</a>
+                and <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a></td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>A way to run and test our programs</td>
+              <td>VSCode terminal,
+                <a href="https://cmake.org/cmake/help/latest/manual/ctest.1.html" target="_blank" rel="noopener noreferrer">CTest</a>,
+                and <a href="https://github.com/catchorg/Catch2" target="_blank" rel="noopener noreferrer">Catch2</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>If you&rsquo;re continuing on from my 2A and/or 2B course, much of this is old
+        news. But if you&rsquo;re joining us for the first time, this might feel like an
+        avalanche of new stuff. No worries! While this might feel like a lot of tooling up
+        front, our course development environment abstracts away most of these layers so we
+        can stay focused on the C++.</p>
+      </section>
+
+      <!-- ── Section 3: Configuration as Code ───────────────── -->
+      <section class="section-card">
+        <h2>Configuration as Code</h2>
+        <p>There&rsquo;s actually code that sets up our development environments. This is
+        known as &ldquo;configuration as code,&rdquo; and there&rsquo;s been a lot of
+        interest and activity in this space recently, which is fantastic because we get to
+        use it, benefit from it, and learn about it!</p>
+
+        <div class="definition-box">
+          <p style="margin:0 0 0.3rem; font-weight:700; color:var(--color-accent);">What This Means for You</p>
+          <p style="margin:0; font-size:0.9rem;">When you open the course repository in a
+            GitHub Codespace, the environment is built automatically from a configuration
+            file in the repo. Every student gets the same compiler, the same tools, and the
+            same setup — no installation required on your end, and no &ldquo;it works on my
+            machine&rdquo; surprises.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+
+</body>
+</html>

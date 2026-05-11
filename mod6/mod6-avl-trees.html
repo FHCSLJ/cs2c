@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVL Trees — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>AVL Trees</h1>
+      <p class="subtitle">
+        Self-balancing binary search trees that guarantee O(log n) performance
+        by enforcing a strict height invariant after every operation.
+      </p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: From BST to AVL ─────────────────────── -->
+      <section class="section-card">
+        <h2>From BST to Balanced Tree</h2>
+        <p>A regular BST provides O(log n) average performance, but only when the tree stays
+        roughly balanced. Insert values in sorted order and the BST degenerates into something
+        much worse:</p>
+
+        <div class="tree-type-grid">
+          <div class="tree-type-card">
+            <h3>Balanced BST</h3>
+            <pre class="tree-diagram">    4
+   / \
+  2   6
+ / \ / \
+1  3 5  7</pre>
+            <ul>
+              <li>Height: 3</li>
+              <li>7 nodes</li>
+              <li>Search: O(log 7) &asymp; 3 steps</li>
+            </ul>
+          </div>
+          <div class="tree-type-card">
+            <h3>Degenerate BST</h3>
+            <pre class="tree-diagram">1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+         \
+          6
+           \
+            7</pre>
+            <ul>
+              <li>Height: 7</li>
+              <li>7 nodes</li>
+              <li>Search: O(7) = O(n) steps</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="warning-callout">
+          <span class="warn-icon">⚠</span>
+          <span>The degenerate tree is structurally a linked list. All three core BST operations
+            fall back to O(n). The O(log n) guarantee only holds when the tree is balanced.</span>
+        </div>
+      </section>
+
+      <!-- ── Section 2: The AVL Invariant ───────────────────── -->
+      <section class="section-card">
+        <h2>The AVL Invariant</h2>
+        <p>AVL trees (named after their inventors Adelson-Velsky and Landis) are self-balancing
+        BSTs that restore balance automatically after every insertion or deletion. The key
+        constraint:</p>
+
+        <div class="definition-box">
+          <p style="margin:0 0 0.3rem; font-weight:700; color:var(--color-accent);">AVL Balance Property</p>
+          <p style="margin:0; font-size:0.9rem;">For every node in the tree, the heights of its
+            left and right subtrees may differ by <strong>at most 1</strong>. Any insertion or
+            deletion that violates this property triggers a <em>rotation</em> to restore it.</p>
+        </div>
+
+        <p>Two quantities are central to tracking and enforcing this property:</p>
+        <ul>
+          <li><strong>Height of a node:</strong> the length of the longest path from that node
+            down to a leaf. A null pointer has height &minus;1; a leaf has height 0.</li>
+          <li><strong>Balance factor:</strong> height(left subtree) &minus; height(right subtree).
+            A balanced node has a balance factor of &minus;1, 0, or 1.</li>
+        </ul>
+      </section>
+
+      <!-- ── Section 3: Heights and Balance Factors ─────────── -->
+      <section class="section-card">
+        <h2>Heights and Balance Factors</h2>
+        <p>Computing height recursively is straightforward but expensive if called repeatedly.
+        The standard solution is to cache the height in each node and update it in place.</p>
+
+        <h3>Recursive height (for reference)</h3>
+        <pre class="tree-diagram"><code>int get_height(node* current)
+{
+    if (current == nullptr)
+    {
+        return -1;
+    }
+
+    return 1 + std::max(get_height(current->left), get_height(current->right));
+}</code></pre>
+
+        <h3>Cached height in the node struct</h3>
+        <pre class="tree-diagram"><code>struct avl_node
+{
+    int data;
+    avl_node* left;
+    avl_node* right;
+    int height; // cached height
+};
+
+int get_height(avl_node* current)
+{
+    if (current == nullptr)
+    {
+        return -1;
+    }
+
+    return current->height;
+}
+
+void update_height(avl_node* current)
+{
+    if (current != nullptr)
+    {
+        current->height = 1 + std::max(get_height(current->left),
+                                       get_height(current->right));
+    }
+}
+
+int get_balance_factor(avl_node* current)
+{
+    if (current == nullptr)
+    {
+        return 0;
+    }
+
+    return get_height(current->left) - get_height(current->right);
+}</code></pre>
+
+        <p style="font-size:0.9rem; color:var(--color-text-muted);">
+          Caching trades a small amount of memory per node for significantly cheaper balance
+          checks during insertions and deletions.
+        </p>
+      </section>
+
+      <!-- ── Section 4: The Four Rotation Cases ─────────────── -->
+      <section class="section-card">
+        <h2>Rebalancing: The Four Rotation Cases</h2>
+        <p>When a balance factor falls outside [&minus;1, 1], exactly one of four structural
+        cases applies. Each has a single rotation (or pair of rotations) that restores balance
+        in O(1) time.</p>
+
+        <h3>Left-Left (LL) — single right rotation</h3>
+        <p>Imbalance at <code>z</code>: balance factor &gt; 1 and left child&rsquo;s balance
+        factor &ge; 0. Rotate <code>z</code> right around its left child <code>y</code>.</p>
+        <pre class="tree-diagram">      z                                    y
+     / \                                 /   \
+    y   T4    rotate right at z         x     z
+   / \         ─────────────────>      / \   / \
+  x   T3                              T1 T2 T3 T4
+ / \
+T1 T2</pre>
+
+        <h3>Right-Right (RR) — single left rotation</h3>
+        <p>Imbalance at <code>z</code>: balance factor &lt; &minus;1 and right child&rsquo;s
+        balance factor &le; 0. Rotate <code>z</code> left around its right child <code>y</code>.</p>
+        <pre class="tree-diagram">  z                                         y
+ / \                                       / \
+T1  y     rotate left at z               z   x
+   / \    ─────────────────>            / \ / \
+  T2  x                               T1 T2 T3 T4
+     / \
+    T3 T4</pre>
+
+        <h3>Left-Right (LR) — double rotation</h3>
+        <p>Imbalance at <code>z</code>: balance factor &gt; 1 and left child&rsquo;s balance
+        factor &lt; 0. First rotate the left child left, then rotate <code>z</code> right.</p>
+        <pre class="tree-diagram">    z                          z                            x
+   / \                        / \                          / \
+  y   T4   left at y         x   T4   right at z          y   z
+ / \       ──────────>      / \        ──────────>        / \ / \
+T1  x                      y   T3                       T1 T2 T3 T4
+   / \                    / \
+  T2 T3                  T1 T2</pre>
+
+        <h3>Right-Left (RL) — double rotation</h3>
+        <p>Imbalance at <code>z</code>: balance factor &lt; &minus;1 and right child&rsquo;s
+        balance factor &gt; 0. First rotate the right child right, then rotate <code>z</code> left.</p>
+        <pre class="tree-diagram">   z                           z                              x
+  / \                         / \                           /   \
+T1   y    right at y         T1  x     left at z           z     y
+    / \   ──────────>            / \   ──────────>         / \  / \
+   x  T4                        T2  y                    T1 T2 T3 T4
+  / \                               / \
+ T2 T3                             T3 T4</pre>
+      </section>
+
+      <!-- ── Section 5: Insertion ────────────────────────────── -->
+      <section class="section-card">
+        <h2>AVL Insertion</h2>
+        <p>Insertion follows standard recursive BST insertion, then unwinds the call stack
+        updating heights and rotating wherever the balance property is violated:</p>
+
+        <pre class="tree-diagram"><code>avl_node* insert(avl_node* root, int key)
+{
+    // 1. Standard BST insertion
+    if (root == nullptr)
+    {
+        avl_node* new_node = new avl_node;
+        new_node->data   = key;
+        new_node->left   = nullptr;
+        new_node->right  = nullptr;
+        new_node->height = 1;
+        return new_node;
+    }
+
+    if (key < root->data)
+        root->left = insert(root->left, key);
+    else if (key > root->data)
+        root->right = insert(root->right, key);
+    else
+        return root; // duplicate keys not allowed
+
+    // 2. Update cached height
+    update_height(root);
+
+    // 3. Check balance factor and rotate if needed
+    int balance = get_balance_factor(root);
+
+    // Left-Left
+    if (balance > 1 && key < root->left->data)
+        return rotate_with_left_child(root);
+
+    // Right-Right
+    if (balance < -1 && key > root->right->data)
+        return rotate_with_right_child(root);
+
+    // Left-Right
+    if (balance > 1 && key > root->left->data)
+    {
+        root->left = rotate_with_right_child(root->left);
+        return rotate_with_left_child(root);
+    }
+
+    // Right-Left
+    if (balance < -1 && key < root->right->data)
+    {
+        root->right = rotate_with_left_child(root->right);
+        return rotate_with_right_child(root);
+    }
+
+    return root;
+}</code></pre>
+      </section>
+
+      <!-- ── Section 6: Complexity & Trade-offs ─────────────── -->
+      <section class="section-card">
+        <h2>Complexity &amp; Trade-offs</h2>
+
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Time</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op-name">Search</td>
+              <td>O(log n)</td>
+              <td>Guaranteed by the height invariant</td>
+            </tr>
+            <tr>
+              <td class="op-name">Insertion</td>
+              <td>O(log n)</td>
+              <td>BST insert + O(log n) rebalancing passes</td>
+            </tr>
+            <tr>
+              <td class="op-name">Deletion</td>
+              <td>O(log n)</td>
+              <td>BST delete + O(log n) rebalancing passes</td>
+            </tr>
+            <tr>
+              <td class="op-name">Rotation</td>
+              <td>O(1)</td>
+              <td>Pointer rewiring only; constant work</td>
+            </tr>
+            <tr>
+              <td class="op-name">Space (tree)</td>
+              <td>O(n)</td>
+              <td>One extra integer per node for cached height</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tree-type-grid" style="margin-top:1rem;">
+          <div class="tree-type-card">
+            <h3>Advantages</h3>
+            <ul>
+              <li>Guaranteed O(log n) for all three core operations — no worst-case degradation</li>
+              <li>Stricter balance than red-black trees means slightly faster lookups</li>
+              <li>Self-balancing: no manual intervention needed after insertions or deletions</li>
+            </ul>
+          </div>
+          <div class="tree-type-card">
+            <h3>Disadvantages</h3>
+            <ul>
+              <li>Extra memory per node for the cached height</li>
+              <li>More rotations per update than less strictly balanced trees (e.g. red-black)</li>
+              <li>Implementation complexity: four rotation cases plus careful height bookkeeping</li>
+            </ul>
+          </div>
+        </div>
+
+        <p style="margin-top:1rem;">AVL trees are an excellent fit for applications where
+        lookups dominate and consistent performance is critical. When writes are frequent and
+        the overhead of extra rotations matters, alternatives like red-black trees may be
+        preferable — which is exactly why most standard library <code>std::set</code> and
+        <code>std::map</code> implementations use red-black trees instead.</p>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+
+</body>
+</html>

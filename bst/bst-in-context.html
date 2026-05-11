@@ -42,7 +42,8 @@
           <div class="op-card">
             <h4>Linked Lists</h4>
             <p>Chains of nodes connected by pointers. Each node holds data and a link
-               to its neighbor(s). In C++: <code>std::list</code> (doubly-linked).</p>
+            to its neighbor(s). In C++: <code>std::list</code> (doubly-linked), which is
+            the model assumed for the end-operation costs below.</p>
           </div>
           <div class="op-card">
             <h4>Binary Search Trees</h4>
@@ -87,7 +88,7 @@
             <tr>
               <td class="op-name">Insert at End</td>
               <td class="good">O(1) amortized</td>
-              <td>O(1) with tail ptr</td>
+              <td>O(1) for <code>std::list</code></td>
               <td>N/A</td>
             </tr>
             <tr>
@@ -105,7 +106,7 @@
             <tr>
               <td class="op-name">Delete at End</td>
               <td class="good">O(1)</td>
-              <td>O(1) with tail ptr</td>
+              <td>O(1) for <code>std::list</code></td>
               <td>N/A</td>
             </tr>
             <tr>
@@ -136,7 +137,7 @@
         </table>
         <div class="warning-callout">
           <span class="warn-icon">⚠</span>
-          <span>* BST O(log n) average assumes a <strong>balanced</strong> tree.
+          <span>* BST O(log n) behavior assumes a balanced tree, meaning the tree height stays O(log n).
             A degenerate BST — produced, for example, by inserting already-sorted values —
             degrades to a linked list with O(n) for all operations.</span>
         </div>
@@ -174,7 +175,7 @@ auto it = std::lower_bound(vec.begin(), vec.end(), value); // O(log n) — sorte
 
         <p><strong>Insertion and deletion:</strong></p>
         <ul>
-          <li>At the beginning or end: O(1) with head/tail pointers.</li>
+          <li>At the beginning or end: O(1) for a doubly-linked list such as <code>std::list</code>.</li>
           <li>At a known iterator position: O(1) pointer rewiring.</li>
           <li>Finding that position first: O(n).</li>
         </ul>
@@ -186,17 +187,19 @@ list.insert(pos_itr, value);     // O(1) once iterator is in hand</code></pre>
         <pre class="tree-diagram"><code>auto it = std::find(list.begin(), list.end(), value);  // O(n)</code></pre>
 
         <h3>Binary Search Trees</h3>
-        <p>All three core operations — search, insert, delete — are <strong>O(log n) average</strong>
-        in a balanced tree and <strong>O(n) worst case</strong> in a degenerate (skewed) tree.</p>
+  <p>All three core operations — search, insert, delete — run in <strong>O(h)</strong>,
+  where <code>h</code> is the tree height. That is <strong>O(log n)</strong> when the
+  tree height stays logarithmic and <strong>O(n)</strong> in a degenerate (skewed) tree.</p>
         <p>An <strong>in-order traversal</strong> visits all nodes in ascending sorted order in
         O(n) — producing sorted output without an additional sort step.</p>
 
         <div class="definition-box">
           <p style="margin:0 0 0.4rem; font-weight:700; color:var(--color-accent);">STL Containers Backed by BSTs</p>
-          <p style="margin:0; font-size:0.9rem;">The C++ standard library implements
+          <p style="margin:0; font-size:0.9rem;">Most mainstream C++ standard library implementations store
             <code>std::map</code>, <code>std::set</code>, <code>std::multimap</code>, and
-            <code>std::multiset</code> as <strong>red-black trees</strong> — a self-balancing
-            BST variant that guarantees O(log n) for all operations.
+            <code>std::multiset</code> in <strong>red-black trees</strong>, a self-balancing
+            BST variant. The standard guarantees logarithmic complexity for the core
+            operations, but it does not require a specific balancing algorithm.
             See the next page in this module for usage examples.</p>
         </div>
       </section>
@@ -325,16 +328,16 @@ list.insert(pos_itr, value);     // O(1) once iterator is in hand</code></pre>
 
         <p>Consider the trade-offs for a lazy BST:</p>
         <ul>
-          <li><strong>Deletion:</strong> O(log n) — locate the node and set a flag; no pointer rewiring needed.</li>
-          <li><strong>Insertion:</strong> O(log n) — if the value already exists as a deleted node, reuse it; otherwise insert normally.</li>
-          <li><strong>Search:</strong> O(log n) — must check the deleted flag at each visited node to filter out "gone" values.</li>
-          <li><strong>Space:</strong> Deleted nodes remain in memory — the tree grows over time if deletions outpace reinsertions.</li>
+          <li><strong>Deletion:</strong> O(h) — find the node, then mark it deleted. Here <code>h</code> is the tree height.</li>
+          <li><strong>Insertion:</strong> O(h) — if the value already exists as a deleted node, reuse it; otherwise insert normally.</li>
+          <li><strong>Search:</strong> O(h) — follow the usual BST path, then check whether the matching node is marked deleted.</li>
+          <li><strong>Space:</strong> Deleted nodes remain in memory, so the tree can keep growing even when the number of active elements does not.</li>
         </ul>
 
         <div class="warning-callout">
           <span class="warn-icon">⚠</span>
           <span>Lazy deletion trades <strong>time</strong> for <strong>space</strong>.
-            If deleted nodes are never reinserted, memory usage grows without bound.
+            If deleted nodes are never reclaimed, memory usage can continue to grow.
             A real implementation needs a periodic rebuild or a threshold that triggers cleanup.</span>
         </div>
 

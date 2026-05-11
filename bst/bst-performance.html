@@ -22,7 +22,7 @@
       </div>
       <h1>Visualizing BST Performance</h1>
       <p class="subtitle">
-        Empirically confirming the O(log n) time guarantee of
+        Empirically illustrating the O(log n) time guarantee of
         <code style="color:#bfdbfe; background:rgba(255,255,255,0.1);">std::set</code>
         with a timing experiment.
       </p>
@@ -42,12 +42,12 @@
         duplicates. It supports <code>insert()</code>, <code>erase()</code>, and
         <code>find()</code>, works with familiar iterator idioms (<code>begin()</code>,
         <code>end()</code>, range-based for), and the C++ standard mandates that these
-        operations run in <strong>O(log n)</strong> time. Most mainstream compilers implement
-        <code>std::set</code> with a red-black tree, a self-balancing BST variant.</p>
+        operations run in <strong>O(log n)</strong> time. Most mainstream C++ standard library
+        implementations use a red-black tree, a self-balancing BST variant.</p>
 
         <div class="definition-box">
           <p style="margin:0 0 0.3rem; font-weight:700; color:var(--color-accent);">The Challenge</p>
-          <p style="margin:0; font-size:0.9rem;">Can we <em>empirically confirm</em> the
+          <p style="margin:0; font-size:0.9rem;">Can we observe behavior that is <em>consistent with</em> the
             O(log n) time guarantee? Let&rsquo;s run an experiment: time the insertion of
             individual elements into a <code>std::set</code> as the set grows, and plot
             runtime against N.</p>
@@ -178,8 +178,8 @@ int main()
       <!-- ── Section 3: Takeaway ─────────────────────────────── -->
       <section class="section-card">
         <h2>What the Data Shows</h2>
-        <p>The plots confirm what the standard guarantees: insertion time into
-        <code>std::set</code> grows logarithmically with N. As the set doubles in size,
+        <p>The plots are consistent with what the standard guarantees: insertion into
+        <code>std::set</code> has logarithmic complexity in N. As the set doubles in size,
         the average insertion cost increases by only a small constant amount, the
         hallmark of O(log n) behavior.</p>
 

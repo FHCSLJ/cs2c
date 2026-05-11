@@ -56,9 +56,10 @@
         </div>
 
         <p>This invariant is what makes BSTs fast. Because the tree is organized by value,
-        a search never needs to examine both subtrees — at each node it takes a single
-        comparison to determine which direction to go, halving the remaining candidates
-        at each step. The result is O(log n) average time for search, insertion,
+  a search never needs to examine both subtrees — at each node it uses one
+  comparison to choose a single subtree to continue. When the tree height stays
+  logarithmic, that choice quickly narrows the search to a small fraction of the
+  nodes. The result is O(log n) average time for search, insertion,
         and deletion.</p>
       </section>
 
@@ -73,7 +74,8 @@
             BSTs improve all three to O(log n) average by exploiting the ordering invariant.</li>
           <li><strong>Versus vectors:</strong> Vectors offer O(1) random access but O(n)
             for insertion and deletion in the middle. BSTs give up random access entirely
-            but provide O(log n) for all three core operations on dynamic, always-sorted data.</li>
+            but can provide O(log n) average time for the three core operations on
+            dynamic, always-sorted data.</li>
         </ul>
         <div class="warning-callout">
           <span class="warn-icon">⚠</span>

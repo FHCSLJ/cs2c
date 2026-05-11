@@ -95,7 +95,8 @@
                 not just to immediate children.</li>
           </ul>
           <p class="note">
-            Note: Standard BSTs do not allow duplicate values. Each key must be unique in the tree.
+            Note: In this module we will assume unique keys. BSTs can support duplicates,
+            but only if the implementation defines a consistent policy for equal keys.
           </p>
         </div>
 
@@ -109,7 +110,7 @@
           <thead>
             <tr>
               <th>Operation</th>
-              <th>Average Case (Balanced)</th>
+              <th>Typical Case (height O(log n))</th>
               <th>Worst Case (Unbalanced)</th>
             </tr>
           </thead>
@@ -258,8 +259,8 @@
       <section class="section-card" id="operations">
         <h2>Recursive Nature of Tree Operations</h2>
         <p>
-          Because trees are inherently recursive structures &mdash; every subtree is itself a
-          valid BST &mdash; most operations on BSTs are most elegantly expressed using recursion.
+          Because BSTs are recursive structures &mdash; every subtree of a BST is itself a
+          valid BST &mdash; most operations are naturally expressed using recursion.
         </p>
 
         <div class="ops-grid">

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 6 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="embed-layout">
+
+  <main>
+    <section class="section-card">
+      <h2>Module 6 Overview</h2>
+
+      <p>Now that we are intimately familiar with binary search trees and the recursive
+      algorithms with which we may apply operations to them, let us turn our attention
+      to that worst-case O(n) running time.</p>
+
+      <p>What can we do about it? We will need new and different algorithms, of course!</p>
+
+      <p>With a binary search tree, a worst-case scenario occurs when ordered data is
+      inserted into the tree. This degrades the BST into a linear linked list, completely
+      defeating the purpose of the structure.</p>
+
+      <p>One solution is to keep the tree <em>balanced</em> as we insert data. That is exactly
+      what <strong>AVL trees</strong> do. To maintain balance, however, an AVL tree must track
+      the height of every node, which costs extra memory per node.</p>
+
+      <p>An alternative balancing strategy that requires no extra node space is the
+      <strong>Splay Tree</strong>. A splay tree maintains balance <em>in the long run</em>
+      (but not necessarily for any single operation) in a somewhat surprising way: as data
+      is accessed, the tree rotates that data up to the root, reshuffling other elements
+      in the process.</p>
+
+      <p>We will implement splay algorithms for our midterm programming project this week.
+      It is a fun and challenging project! Be prepared to spend time with paper and pencil
+      working through the maneuverings of these algorithms. An animated demonstration is
+      embedded below this reading in our Canvas page and may be helpful to revisit as you
+      work on the project.</p>
+    </section>
+  </main>
+
+</body>
+</html>

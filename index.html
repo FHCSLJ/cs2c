@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS2C — Page Index</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .index-section { margin-bottom: 0.5rem; }
+    .index-section h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .index-links {
+      list-style: none;
+      margin: 0 0 0.25rem;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .index-links li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+    .index-links a {
+      font-weight: 600;
+      color: var(--color-accent);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .index-links a:hover { text-decoration: underline; }
+    .index-links .url-hint {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Page Index</h1>
+      <p class="subtitle">All published content pages — for internal reference and URL copying.</p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Module 1 ─────────────────────────────────────────── -->
+      <section class="section-card">
+        <div class="index-section">
+          <h3>Module 1 &mdash; Introduction &amp; Toolstack</h3>
+          <ul class="index-links">
+            <li>
+              <a href="mod1_intro_toolstack/intro.html" target="_blank">Module 1 Overview</a>
+              <span class="url-hint">mod1_intro_toolstack/intro.html</span>
+            </li>
+            <li>
+              <a href="mod1_intro_toolstack/re-introducing-cpp.html" target="_blank">Re-Introducing C++</a>
+              <span class="url-hint">mod1_intro_toolstack/re-introducing-cpp.html</span>
+            </li>
+            <li>
+              <a href="mod1_intro_toolstack/toolstack.html" target="_blank">The Toolstack</a>
+              <span class="url-hint">mod1_intro_toolstack/toolstack.html</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ── Module 5 ─────────────────────────────────────────── -->
+      <section class="section-card">
+        <div class="index-section">
+          <h3>Module 5 &mdash; Binary Search Trees</h3>
+          <ul class="index-links">
+            <li>
+              <a href="bst/bst-overview.html" target="_blank">Module 5 Overview</a>
+              <span class="url-hint">bst/bst-overview.html</span>
+            </li>
+            <li>
+              <a href="bst/bst-intro.html" target="_blank">BST Introduction</a>
+              <span class="url-hint">bst/bst-intro.html</span>
+            </li>
+            <li>
+              <a href="bst/bst-in-context.html" target="_blank">BSTs in Context</a>
+              <span class="url-hint">bst/bst-in-context.html</span>
+            </li>
+            <li>
+              <a href="bst/bst-performance.html" target="_blank">Visualizing BST Performance</a>
+              <span class="url-hint">bst/bst-performance.html</span>
+            </li>
+            <li>
+              <a href="bst/bst-reading.html" target="_blank">Suggested Reading</a>
+              <span class="url-hint">bst/bst-reading.html</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ── Module 6 ─────────────────────────────────────────── -->
+      <section class="section-card">
+        <div class="index-section">
+          <h3>Module 6 &mdash; AVL Trees &amp; Splay Trees</h3>
+          <ul class="index-links">
+            <li>
+              <a href="mod6/mod6-reading.html" target="_blank">Suggested Reading</a>
+              <span class="url-hint">mod6/mod6-reading.html</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+
+</body>
+</html>

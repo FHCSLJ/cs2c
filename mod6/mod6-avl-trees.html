@@ -171,49 +171,53 @@ int get_balance_factor(avl_node* current)
         cases applies. Each has a single rotation (or pair of rotations) that restores balance
         in O(1) time.</p>
 
-        <h3>Left-Left (LL) — single right rotation</h3>
+        <h3>Left-Left (LL) — single rotation with left child</h3>
         <p>Imbalance at <code>z</code>: balance factor &gt; 1 and left child&rsquo;s balance
-        factor &ge; 0. Rotate <code>z</code> right around its left child <code>y</code>.</p>
-        <pre class="tree-diagram">      z                                    y
-     / \                                 /   \
-    y   T4    rotate right at z         x     z
-   / \         ─────────────────>      / \   / \
-  x   T3                              T1 T2 T3 T4
+        factor &ge; 0. Call <code>rotate_with_left_child(z)</code>: <code>y</code> becomes the
+        new root, and <code>z</code> drops to become <code>y</code>&rsquo;s right child.</p>
+        <pre class="tree-diagram">      z                                     y
+     / \                                  /   \
+    y   T4    rotate_with_left_child(z)  x     z
+   / \         ─────────────────>       / \   / \
+  x   T3                               T1 T2 T3 T4
  / \
 T1 T2</pre>
 
-        <h3>Right-Right (RR) — single left rotation</h3>
+        <h3>Right-Right (RR) — single rotation with right child</h3>
         <p>Imbalance at <code>z</code>: balance factor &lt; &minus;1 and right child&rsquo;s
-        balance factor &le; 0. Rotate <code>z</code> left around its right child <code>y</code>.</p>
-        <pre class="tree-diagram">  z                                         y
- / \                                       / \
-T1  y     rotate left at z               z   x
-   / \    ─────────────────>            / \ / \
-  T2  x                               T1 T2 T3 T4
+        balance factor &le; 0. Call <code>rotate_with_right_child(z)</code>: <code>y</code>
+        becomes the new root, and <code>z</code> drops to become <code>y</code>&rsquo;s left child.</p>
+        <pre class="tree-diagram">  z                                              y
+ / \                                            / \
+T1  y     rotate_with_right_child(z)           z   x
+   / \    ─────────────────>                  / \ / \
+  T2  x                                     T1 T2 T3 T4
      / \
     T3 T4</pre>
 
         <h3>Left-Right (LR) — double rotation</h3>
         <p>Imbalance at <code>z</code>: balance factor &gt; 1 and left child&rsquo;s balance
-        factor &lt; 0. First rotate the left child left, then rotate <code>z</code> right.</p>
-        <pre class="tree-diagram">    z                          z                            x
-   / \                        / \                          / \
-  y   T4   left at y         x   T4   right at z          y   z
- / \       ──────────>      / \        ──────────>        / \ / \
-T1  x                      y   T3                       T1 T2 T3 T4
-   / \                    / \
-  T2 T3                  T1 T2</pre>
+        factor &lt; 0. First call <code>rotate_with_right_child</code> on the left child,
+        then call <code>rotate_with_left_child</code> on <code>z</code>.</p>
+        <pre class="tree-diagram">    z                                z                            x
+   / \                              / \                          / \
+  y   T4   rotate_with_right_      x   T4   rotate_with_left_   y   z
+ / \        child(y)              / \        child(z)          / \ / \
+T1  x      ──────────>           y   T3      ──────────>     T1 T2 T3 T4
+   / \                          / \
+  T2 T3                        T1 T2</pre>
 
         <h3>Right-Left (RL) — double rotation</h3>
         <p>Imbalance at <code>z</code>: balance factor &lt; &minus;1 and right child&rsquo;s
-        balance factor &gt; 0. First rotate the right child right, then rotate <code>z</code> left.</p>
-        <pre class="tree-diagram">   z                           z                              x
-  / \                         / \                           /   \
-T1   y    right at y         T1  x     left at z           z     y
-    / \   ──────────>            / \   ──────────>         / \  / \
-   x  T4                        T2  y                    T1 T2 T3 T4
-  / \                               / \
- T2 T3                             T3 T4</pre>
+        balance factor &gt; 0. First call <code>rotate_with_left_child</code> on the right child,
+        then call <code>rotate_with_right_child</code> on <code>z</code>.</p>
+        <pre class="tree-diagram">   z                                z                              x
+  / \                              / \                           /   \
+T1   y    rotate_with_left_       T1  x     rotate_with_right_  z     y
+    / \    child(y)                  / \     child(z)          / \   / \
+   x  T4  ──────────>               T2  y    ──────────>      T1 T2 T3 T4
+  / \                                  / \
+ T2 T3                                T3 T4</pre>
       </section>
 
       <!-- ── Section 5: Insertion ────────────────────────────── -->

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 7 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Hash Tables</h1>
+      <p class="subtitle">Module 7 Overview &mdash; O(1) average time for access, insertion, and removal.</p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: Motivation ─────────────────────────────── -->
+      <section class="section-card">
+        <h2>Can We Do Better Than O(log n)?</h2>
+
+        <p>Arrays give us constant-time access by index. Linked lists give us constant-time
+        insertion and removal, provided we already know <em>where</em> to do that work,
+        which is a significant caveat. Binary search trees represent a solid O(log n) compromise
+        on all three operations. But can we do even better?</p>
+
+        <p>Enter, hash tables.</p>
+
+        <div class="definition-box">
+          <strong>Hash Table</strong><br>
+          A data structure that implements an <em>associative array</em>: a structure that maps
+          keys to values (or elements to positions). It uses a <em>hash function</em> that takes
+          a key as input and computes an index into an array of buckets or slots, where the
+          corresponding value can be found. With a good hash function and a low load factor,
+          hash tables achieve <strong>O(1) average time complexity</strong> for access, insertion,
+          and removal.
+        </div>
+
+        <p>The key insight is that instead of <em>searching</em> for an element, we
+        <em>compute</em> where it lives based on the element itself. That is where the magic
+        happens.</p>
+      </section>
+
+      <!-- ── Section 2: Collisions ─────────────────────────────── -->
+      <section class="section-card">
+        <h2>Handling Collisions</h2>
+
+        <p>When two different keys hash to the same index, we call that a <em>collision</em>.
+        Collisions are unavoidable in practice, so every hash table implementation needs a
+        strategy for handling them. Two major approaches exist:</p>
+
+        <div class="tree-type-grid">
+          <div class="tree-type-card">
+            <h3>Chaining</h3>
+            <p>Each slot in the array holds a <em>bucket</em> of items that share the same
+            hash index. The bucket can be implemented as a linked list, a binary search tree,
+            or any other structure. Lookup requires hashing to the right bucket, then searching
+            within it.</p>
+          </div>
+          <div class="tree-type-card">
+            <h3>Open Addressing</h3>
+            <p>All items are stored directly in the array slots. When a collision occurs, a
+            <em>probing algorithm</em> finds the next available slot. This week's programming
+            project has you implement two types of probing as you build a hash table from
+            scratch.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Section 3: Hash Functions ────────────────────────── -->
+      <section class="section-card">
+        <h2>What Makes a Good Hash Function?</h2>
+
+        <p>The goal of a hash function is to distribute keys <em>uniformly</em> across the
+        table to minimize collisions. A good hash function has three properties:</p>
+
+        <ul>
+          <li><strong>Deterministic</strong> &mdash; the same input always produces the same output.</li>
+          <li><strong>Efficient</strong> &mdash; the function is quick to compute.</li>
+          <li><strong>Uniform distribution</strong> &mdash; keys spread evenly across available slots,
+          avoiding clustering.</li>
+        </ul>
+
+        <p>We will also explore <em>load factor</em>  (the ratio of stored items to
+        total slots) in this week's project. Keeping the load factor low is essential
+        to preserving O(1) average performance.</p>
+
+        <figure style="text-align: center; margin: 1.5rem 0 0.5rem;">
+          <img src="images/keys.jpeg"
+               alt="A collection of unique antique keys, illustrating the concept of unique keys in an associative array."
+               style="max-width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-card);">
+          <figcaption style="font-size: 0.82rem; color: var(--color-text-muted); margin-top: 0.5rem;">
+            Every key is unique &mdash; just like the keys in an associative array.
+          </figcaption>
+        </figure>
+
+        <div class="info-callout">
+          <p>This week&rsquo;s project: <strong>prj06 Hash Tables</strong></p>
+          <p class="sub">Implement a hash table from scratch using open addressing with two
+          probing strategies: <em>linear probing</em>, which steps through slots one at a
+          time, and <em>quadratic probing</em>, which uses a quadratic function to spread
+          probes more evenly and reduce clustering.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

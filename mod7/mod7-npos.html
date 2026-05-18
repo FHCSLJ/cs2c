@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>std::string::npos — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1><code>std::string::npos</code></h1>
+      <p class="subtitle">A sentinel value, a very large number, and six ways to find it.</p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: What is npos? ──────────────────────────── -->
+      <section class="section-card">
+        <h2>What Is <code>npos</code>?</h2>
+
+        <div class="definition-box">
+          <strong><code>std::string::npos</code></strong><br>
+          A constant static member of the <code>std::string</code> class. We can think of it
+          as meaning <em>&ldquo;no position.&rdquo;</em> It is used as a sentinel value to
+          indicate that no match was found during a string search operation, and we
+          can use it similarly in our own code to signal a failed position lookup.
+        </div>
+
+        <p>Its value is the largest possible value for <code>size_t</code>, which on a 64-bit
+        system is 18,446,744,073,709,551,615 (that is, 2<sup>64</sup>&nbsp;&minus;&nbsp;1).
+        This works as a sentinel because <code>size_t</code> is guaranteed to be large enough
+        to represent the size of any object or the number of elements in any container. Even
+        if a container held <code>size_t</code> max elements, the largest valid index would
+        be one less. The maximum value is therefore a natural stand-in for &ldquo;no index&rdquo;
+        or &ldquo;no position.&rdquo;</p>
+      </section>
+
+      <!-- ── Section 2: Exploring the value ───────────────────── -->
+      <section class="section-card">
+        <h2>Exploring the Value</h2>
+
+        <p>We can print the value of <code>std::string::npos</code> directly and confirm it
+        is just a number. The program below also shows several other ways to arrive at the
+        same max <code>size_t</code> value &mdash; some straightforward, others less so and even implementation specific:</p>
+
+        <pre class="tree-diagram">#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;limits&gt;
+
+int main()
+{
+    // Direct: print npos itself
+    std::cout &lt;&lt; std::string::npos &lt;&lt; std::endl;
+
+    // 2^64 - 1 via pow(): the subtraction loses precision (ULP at
+    // 2^64 is 4096, so -1 rounds back to 2^64), and casting that
+    // to size_t is implementation-defined -- happens to work here
+    std::cout &lt;&lt; static_cast&lt;size_t&gt;(std::pow(2, 64) - 1) &lt;&lt; std::endl;
+
+    // Left shift: conceptually correct, but shifting by an amount
+    // >= the bit width of the type is undefined behavior -- works
+    // in our dev env, but not portable
+    std::cout &lt;&lt; (static_cast&lt;size_t&gt;(1) &lt;&lt; 64) - 1 &lt;&lt; std::endl;
+
+    // Split the shift to avoid overflow
+    std::cout &lt;&lt; (static_cast&lt;size_t&gt;(1) &lt;&lt; 63) - 1
+                 + (static_cast&lt;size_t&gt;(1) &lt;&lt; 63) &lt;&lt; std::endl;
+
+    // Bitwise NOT of 0: flips all 0 bits to 1
+    std::cout &lt;&lt; ~static_cast&lt;size_t&gt;(0) &lt;&lt; std::endl;
+
+    // Unsigned wraparound: -1 wraps to max
+    size_t max = -1;
+    std::cout &lt;&lt; max &lt;&lt; std::endl;
+
+    // Explicit: numeric_limits
+    std::cout &lt;&lt; std::numeric_limits&lt;size_t&gt;::max() &lt;&lt; std::endl;
+}</pre>
+
+        <p>Output (course development environment, 64-bit):</p>
+
+        <pre class="tree-diagram">18446744073709551615
+18446744073709551615
+18446744073709551615
+18446744073709551615
+18446744073709551615
+18446744073709551615
+18446744073709551615</pre>
+
+        <p>All seven approaches produce the same value. A few notes worth highlighting:</p>
+
+        <ul>
+          <li>The <code>pow()</code> approach actually has two problems. First, the subtraction
+          <code>pow(2,64) - 1</code> loses precision: at the scale of 2<sup>64</sup>, adjacent
+          representable <code>double</code> values are 4096 apart, so subtracting 1 rounds
+          straight back to 2<sup>64</sup>. Second, casting a <code>double</code> value that
+          exceeds <code>size_t</code>&rsquo;s maximum to <code>size_t</code> is
+          implementation-defined behavior. It produces max <code>size_t</code> on this platform,
+          but that is not guaranteed.</li>
+          <li>The 64-bit left shift (<code>1 &lt;&lt; 64</code>) is undefined behavior in C++:
+          shifting by an amount equal to or greater than the bit width of the type is not
+          defined by the standard. It happens to work in our dev environment but is not portable.</li>
+          <li><code>~static_cast&lt;size_t&gt;(0)</code> and assigning <code>-1</code> to a
+          <code>size_t</code> are both idiomatic C++ ways to get the max unsigned value.
+          The latter relies on well-defined unsigned wraparound.</li>
+          <li><code>std::numeric_limits&lt;size_t&gt;::max()</code> from
+          <code>&lt;limits&gt;</code> is the most explicit and portable choice.</li>
+        </ul>
+
+        <div class="warning-callout">
+          <strong>Any other fun ways to find max <code>size_t</code>?</strong> Can you come up with an approach not shown here?
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

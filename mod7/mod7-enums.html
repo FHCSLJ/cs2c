@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enumeration Types — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Enumeration Types</h1>
+      <p class="subtitle">Named constants, type safety, and a robot that knows which way it&rsquo;s facing.</p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Section 1: What is an enum? ───────────────────────── -->
+      <section class="section-card">
+        <h2>The Big Picture</h2>
+
+        <p>Enumeration types (enums) are a lot like a list of declared constants. Defining
+        an enum is like defining a new integral type where a variable of that type can only
+        take on a restricted set of values, and we get to pick the names for those values.
+        Enums are extremely handy for representing a fixed set of identifiers.</p>
+
+        <div class="definition-box">
+          <strong>Enumeration type (<code>enum</code>)</strong><br>
+          A user-defined type whose values are drawn from a named set of integer constants.
+          The compiler enforces that a variable of an enum type can only be assigned values
+          from that set, providing compile-time type checking that raw integers cannot.
+        </div>
+      </section>
+
+      <!-- ── Section 2: Motivation ─────────────────────────────── -->
+      <section class="section-card">
+        <h2>Motivation: The Robot Problem</h2>
+
+        <p>Suppose we have a <code>class Robot</code> with an attribute <code>facing</code>
+        that holds the cardinal direction the robot is currently facing. We have a few options
+        for how to represent it.</p>
+
+        <p>We could use a <code>string</code> and assign values like <code>"North"</code>,
+        <code>"East"</code>, etc. But without extra validation, <code>"Norht"</code> or
+        <code>"NW"</code> could easily sneak in. We could use an <code>int</code> with an
+        implicit mapping (0 = North, 1 = East, ...), but that makes the code unreadable.
+        We could define named constants:</p>
+
+        <pre class="tree-diagram">const int NORTH = 0;
+const int EAST  = 1;
+const int SOUTH = 2;
+const int WEST  = 3;</pre>
+
+        <p>That is a real improvement. But these four constants have no formal relationship
+        to each other, and <code>facing</code> is still just an <code>int</code> that the
+        compiler will happily let you assign any integer to. An enum groups them into a
+        single named type and lets the compiler help catch mistakes.</p>
+      </section>
+
+      <!-- ── Section 3: Declaring an enum ──────────────────────── -->
+      <section class="section-card">
+        <h2>Declaring and Using an Enum</h2>
+
+        <p>We declare the new type like this:</p>
+
+        <pre class="tree-diagram">enum Direction
+{
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST
+};</pre>
+
+        <p>A variable of type <code>Direction</code> can only be assigned values from that
+        set:</p>
+
+        <pre class="tree-diagram">Direction facing;
+
+facing = NORTH;
+
+// later ...
+
+facing = EAST;</pre>
+
+        <p>And we can test its value to make decisions:</p>
+
+        <pre class="tree-diagram">if (facing == SOUTH)
+{
+    // Statements
+}</pre>
+      </section>
+
+      <!-- ── Section 4: Underlying values ──────────────────────── -->
+      <section class="section-card">
+        <h2>Underlying Integer Values</h2>
+
+        <p>Each enumeration constant maps to an integer. By default, values start at 0 and
+        increment by 1, so the declaration above is equivalent to:</p>
+
+        <pre class="tree-diagram">enum Direction
+{
+    NORTH = 0,
+    EAST  = 1,
+    SOUTH = 2,
+    WEST  = 3
+};</pre>
+
+        <p>You can assign explicit values to any or all of the constants:</p>
+
+        <pre class="tree-diagram">enum Direction
+{
+    NORTH = 0,
+    EAST  = 12,
+    SOUTH = 23,
+    WEST  = 34
+};</pre>
+
+        <p>You can also assign values to only some constants. Unassigned constants receive
+        the next consecutive value after the preceding one:</p>
+
+        <pre class="tree-diagram">enum Direction
+{
+    NORTH = 7,
+    EAST,        // 8
+    SOUTH = 20,
+    WEST         // 21
+};</pre>
+
+        <p>Whether the underlying values matter depends on the use case. Often the names are
+        all you need, and the integers are just an implementation detail.</p>
+
+        <div class="info-callout">
+          <p>This week&rsquo;s project: <strong>prj06 Hash Tables</strong></p>
+          <p class="sub">You will work with an enum variable as part of the hash table
+          implementation. Pay attention to how the enum type improves readability compared
+          to a plain integer flag.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 8 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="embed-layout">
+
+  <main>
+
+    <!-- ── Section 1: Try it yourself ───────────────────────── -->
+    <section class="section-card">
+      <h2>Before We Dive In</h2>
+
+      <p>This week we will implement quicksort. Before we do, to really appreciate how
+      much work that algorithm accomplishes in so few lines of code, try this first:</p>
+
+      <div class="definition-box">
+        <strong>Challenge:</strong> Open a code editor right now and try writing a sorting
+        algorithm from scratch. We have previously seen how to sort data using a BST, but
+        can we sort by operating directly on an array? How would you do it? How fast can
+        you do it?
+      </div>
+
+      <p>Take some time to think and tinker before reading on.</p>
+    </section>
+
+    <!-- ── Section 2: Algorithm survey ──────────────────────── -->
+    <section class="section-card">
+      <h2>So Many Sorts!</h2>
+
+      <p>Welcome back. What did you come up with? This problem has been studied extensively,
+      and there are many well-known approaches. See if yours resembles any of these:</p>
+
+      <div class="ops-grid">
+        <div class="op-card">
+          <h4><a href="https://en.wikipedia.org/wiki/Bubble_sort" target="_blank" rel="noopener noreferrer">Bubble Sort</a></h4>
+          <p>Repeatedly swap adjacent elements that are out of order.</p>
+        </div>
+        <div class="op-card">
+          <h4><a href="https://www.geeksforgeeks.org/insertion-sort-algorithm/" target="_blank" rel="noopener noreferrer">Insertion Sort</a></h4>
+          <p>Build a sorted prefix one element at a time by inserting each into position.</p>
+        </div>
+        <div class="op-card">
+          <h4><a href="https://en.wikipedia.org/wiki/Selection_sort" target="_blank" rel="noopener noreferrer">Selection Sort</a></h4>
+          <p>Repeatedly select the minimum from the unsorted remainder.</p>
+        </div>
+        <div class="op-card">
+          <h4><a href="https://en.wikipedia.org/wiki/Shellsort" target="_blank" rel="noopener noreferrer">Shellsort</a></h4>
+          <p>Generalize insertion sort by sorting elements far apart before closing the gap.</p>
+        </div>
+        <div class="op-card">
+          <h4><a href="https://en.wikipedia.org/wiki/Merge_sort" target="_blank" rel="noopener noreferrer">Mergesort</a></h4>
+          <p>Divide in half, sort each half recursively, then merge the results.</p>
+        </div>
+        <div class="op-card">
+          <h4><a href="https://en.wikipedia.org/wiki/Heapsort" target="_blank" rel="noopener noreferrer">Heapsort</a></h4>
+          <p>Build a max-heap, then repeatedly extract the maximum.</p>
+        </div>
+        <div class="op-card">
+          <h4><a href="https://en.wikipedia.org/wiki/Bucket_sort" target="_blank" rel="noopener noreferrer">Bucket Sort</a></h4>
+          <p>Distribute elements into buckets, sort each bucket, then concatenate.</p>
+        </div>
+        <div class="op-card">
+          <h4><a href="https://en.wikipedia.org/wiki/Radix_sort" target="_blank" rel="noopener noreferrer">Radix Sort</a></h4>
+          <p>Sort digit by digit (or character by character) from least to most significant.</p>
+        </div>
+        <div class="op-card">
+          <h4><a href="https://en.wikipedia.org/wiki/Quicksort" target="_blank" rel="noopener noreferrer">Quicksort</a></h4>
+          <p>Pick a pivot, partition around it, and sort each partition recursively.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section 3: Why quicksort? ─────────────────────────── -->
+    <section class="section-card">
+      <h2>Why Quicksort?</h2>
+
+      <p>Quicksort has a worst-case of O(n^2), which it shares with bubble sort, insertion
+      sort, and selection sort. But its average case is O(n log n), and in practice it tends
+      to outperform other O(n log n) algorithms due to smaller constant factors and
+      generally good cache behavior.</p>
+
+      <table class="complexity-table">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Average Case</th>
+            <th>Worst Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="op-name">Bubble / Insertion / Selection Sort</td>
+            <td class="bad">O(n^2)</td>
+            <td class="bad">O(n^2)</td>
+          </tr>
+          <tr>
+            <td class="op-name">Mergesort / Heapsort</td>
+            <td class="good">O(n log n)</td>
+            <td class="good">O(n log n)</td>
+          </tr>
+          <tr>
+            <td class="op-name">Quicksort</td>
+            <td class="good">O(n log n)</td>
+            <td class="bad">O(n^2)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>If you have never seen quicksort before, you will not believe how concise it is.</p>
+
+      <p>Enjoy the animated demonstration of quicksort in action below before moving on.</p>
+    </section>
+
+  </main>
+
+</body>
+</html>

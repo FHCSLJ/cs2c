@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>So Many Sorts — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>So Many Sorts!</h1>
+      <p class="subtitle">Module 8 &mdash; A Survey of Sorting Algorithms</p>
+    </header>
+
+    <main class="content">
+
+      <!-- ── Intro ────────────────────────────────────────────── -->
+      <section class="section-card">
+        <h2>Where We Left Off</h2>
+        <p>With BSTs still fresh in our minds, let&rsquo;s start with tree sort and think
+        about how we might implement it using the standard library. Then we&rsquo;ll survey
+        several other fundamental approaches before turning our full attention to quicksort,
+        this module&rsquo;s programming project.</p>
+      </section>
+
+      <!-- ── Tree Sort ─────────────────────────────────────────── -->
+      <section class="section-card">
+        <h2>Tree Sort</h2>
+
+        <h3>Concept</h3>
+        <p>Tree Sort uses a binary search tree to sort elements:</p>
+        <ol>
+          <li>Insert all elements into a BST.</li>
+          <li>Perform an in-order traversal to read them back in sorted order.</li>
+        </ol>
+        <p>Tree Sort combines the principles of BSTs with sorting and provides a natural
+        approach when you are already working with tree-based data structures. Note that
+        worst-case O(n&sup2;) applies to an unbalanced BST. Using a self-balancing tree
+        such as <code>std::multiset</code> (a red-black tree) guarantees O(n&nbsp;log&nbsp;n)
+        in all cases.</p>
+
+        <h3>Pseudocode</h3>
+        <pre class="tree-diagram"><code>procedure tree_sort(A: list of sortable items)
+    create an empty binary search tree
+    for each element in A
+        insert element into the tree
+    perform in-order traversal and copy elements back to A
+end procedure</code></pre>
+
+        <h3>Implementation</h3>
+        <pre class="tree-diagram"><code>// Using std::multiset (red-black tree) as the BST
+template &lt;typename Iterator&gt;
+void tree_sort(Iterator begin, Iterator end)
+{
+    using T = typename std::iterator_traits&lt;Iterator&gt;::value_type;
+    std::multiset&lt;T&gt; tree(begin, end);
+    std::copy(tree.begin(), tree.end(), begin);
+}</code></pre>
+      </section>
+
+      <!-- ── Bubble Sort ───────────────────────────────────────── -->
+      <section class="section-card">
+        <h2>Bubble Sort</h2>
+
+        <h3>Concept</h3>
+        <p>Bubble Sort is one of the simplest sorting algorithms. It repeatedly steps
+        through the list, compares adjacent elements, and swaps them if they are out of
+        order. Each full pass moves the next-largest unsorted element to its final position,
+        as if it &ldquo;bubbles&rdquo; to the top.</p>
+
+        <h3>Pseudocode</h3>
+        <pre class="tree-diagram"><code>procedure bubble_sort(A: list of sortable items)
+    n = length(A)
+    for i from 0 to n-1
+        for j from 0 to n-i-2
+            if A[j] &gt; A[j+1]
+                swap(A[j], A[j+1])
+        end for
+    end for
+end procedure</code></pre>
+
+        <h3>Implementation</h3>
+        <pre class="tree-diagram"><code>template &lt;typename Iterator&gt;
+void bubble_sort(Iterator begin, Iterator end)
+{
+    if (begin == end)
+        return;
+
+    for (auto i = begin; i != end; ++i)
+    {
+        for (auto j = begin; j != std::prev(end, std::distance(begin, i) + 1); ++j)
+        {
+            if (*(j + 1) &lt; *j)
+                std::iter_swap(j, j + 1);
+        }
+    }
+}</code></pre>
+      </section>
+
+      <!-- ── Selection Sort ────────────────────────────────────── -->
+      <section class="section-card">
+        <h2>Selection Sort</h2>
+
+        <h3>Concept</h3>
+        <p>Selection Sort divides the array into a sorted prefix and an unsorted remainder.
+        On each pass, it finds the minimum element in the unsorted portion and swaps it to
+        the front of that portion, growing the sorted prefix by one.</p>
+
+        <h3>Pseudocode</h3>
+        <pre class="tree-diagram"><code>procedure selection_sort(A: list of sortable items)
+    n = length(A)
+    for i from 0 to n-1
+        min_index = i
+        for j from i+1 to n-1
+            if A[j] &lt; A[min_index]
+                min_index = j
+        if min_index != i
+            swap(A[i], A[min_index])
+    end for
+end procedure</code></pre>
+
+        <h3>Implementation</h3>
+        <pre class="tree-diagram"><code>template &lt;typename Iterator&gt;
+void selection_sort(Iterator begin, Iterator end)
+{
+    for (auto i = begin; i != end; ++i)
+    {
+        auto min_elem = i;
+        for (auto j = std::next(i); j != end; ++j)
+        {
+            if (*j &lt; *min_elem)
+                min_elem = j;
+        }
+        std::iter_swap(i, min_elem);
+    }
+}</code></pre>
+      </section>
+
+      <!-- ── Insertion Sort ────────────────────────────────────── -->
+      <section class="section-card">
+        <h2>Insertion Sort</h2>
+
+        <h3>Concept</h3>
+        <p>Insertion Sort builds the sorted array one element at a time. It takes each
+        new element and shifts it leftward into its correct position among the already-sorted
+        elements. Think of sorting a hand of playing cards: you pick up one card at a time
+        and slip it into the right spot among the cards already in your hand.</p>
+        <p>Insertion Sort is notably efficient for small or nearly-sorted data, which is
+        why it appears as a base case in several hybrid sorting algorithms.</p>
+
+        <h3>Pseudocode</h3>
+        <pre class="tree-diagram"><code>procedure insertion_sort(A: list of sortable items)
+    n = length(A)
+    for i from 1 to n-1
+        key = A[i]
+        j = i - 1
+        while j &gt;= 0 and A[j] &gt; key
+            A[j+1] = A[j]
+            j = j - 1
+        A[j+1] = key
+    end for
+end procedure</code></pre>
+
+        <h3>Implementation</h3>
+        <pre class="tree-diagram"><code>template &lt;typename Iterator&gt;
+void insertion_sort(Iterator begin, Iterator end)
+{
+    if (begin == end)
+        return;
+
+    for (auto i = std::next(begin); i != end; ++i)
+    {
+        auto key = *i;
+        auto j = i;
+
+        while (j != begin &amp;&amp; *(std::prev(j)) &gt; key)
+        {
+            *j = *(std::prev(j));
+            --j;
+        }
+
+        *j = key;
+    }
+}</code></pre>
+      </section>
+
+      <!-- ── Merge Sort ─────────────────────────────────────────── -->
+      <section class="section-card">
+        <h2>Merge Sort</h2>
+
+        <h3>Concept</h3>
+        <p>Merge Sort follows the divide-and-conquer strategy:</p>
+        <ol>
+          <li><strong>Divide:</strong> Split the array in half recursively until each
+          sub-array contains a single element (trivially sorted).</li>
+          <li><strong>Conquer:</strong> Merge pairs of sorted sub-arrays into a single
+          sorted array, working back up to the full size.</li>
+        </ol>
+        <p>Merge Sort guarantees O(n&nbsp;log&nbsp;n) in all cases and is stable, but
+        requires O(n) extra space for the temporary arrays used during merging.</p>
+
+        <h3>Pseudocode</h3>
+        <pre class="tree-diagram"><code>procedure merge_sort(A, start, end)
+    if end - start &gt; 1
+        middle = (start + end) / 2
+        merge_sort(A, start, middle)
+        merge_sort(A, middle, end)
+        merge(A, start, middle, end)
+    end if
+end procedure
+
+procedure merge(A, start, middle, end)
+    copy A[start..middle] into temporary array L
+    copy A[middle..end]   into temporary array R
+
+    i = 0, j = 0, k = start
+    while i &lt; length(L) and j &lt; length(R)
+        if L[i] &lt;= R[j]: A[k] = L[i]; i++
+        else:             A[k] = R[j]; j++
+        k++
+
+    copy any remaining elements of L (or R) back to A
+end procedure</code></pre>
+
+        <h3>Implementation</h3>
+        <pre class="tree-diagram"><code>template &lt;typename Iterator&gt;
+void merge(Iterator begin, Iterator middle, Iterator end)
+{
+    using T = typename std::iterator_traits&lt;Iterator&gt;::value_type;
+
+    auto left_size  = std::distance(begin, middle);
+    auto right_size = std::distance(middle, end);
+
+    std::vector&lt;T&gt; left(left_size);
+    std::vector&lt;T&gt; right(right_size);
+
+    std::copy(begin,  middle, left.begin());
+    std::copy(middle, end,    right.begin());
+
+    auto i = 0, j = 0;
+    Iterator k = begin;
+
+    while (i &lt; left_size &amp;&amp; j &lt; right_size)
+    {
+        if (left[i] &lt;= right[j])
+            *k = left[i++];
+        else
+            *k = right[j++];
+        ++k;
+    }
+
+    while (i &lt; left_size)  { *k = left[i++];  ++k; }
+    while (j &lt; right_size) { *k = right[j++]; ++k; }
+}
+
+template &lt;typename Iterator&gt;
+void merge_sort(Iterator begin, Iterator end)
+{
+    if (std::distance(begin, end) &gt; 1)
+    {
+        auto middle = std::next(begin, std::distance(begin, end) / 2);
+        merge_sort(begin, middle);
+        merge_sort(middle, end);
+        merge(begin, middle, end);
+    }
+}</code></pre>
+      </section>
+
+      <!-- ── Quick Sort ─────────────────────────────────────────── -->
+      <section class="section-card">
+        <h2>Quick Sort</h2>
+
+        <h3>Concept</h3>
+        <p>Quick Sort is another divide-and-conquer algorithm:</p>
+        <ol>
+          <li>Choose a <strong>pivot</strong> element from the array.</li>
+          <li><strong>Partition</strong> the array using the pivot value.</li>
+          <li>Recursively sort the two partitions.</li>
+        </ol>
+        <p>Quick Sort&rsquo;s average case is O(n&nbsp;log&nbsp;n) and it sorts in-place
+        (O(log&nbsp;n) stack space for recursion). In practice it tends to be faster than
+        other O(n&nbsp;log&nbsp;n) algorithms due to small constant factors and excellent
+        cache behavior. Its weakness is a worst case of O(n&sup2;), which occurs when pivot
+        selection consistently produces highly unbalanced partitions (for example, always
+        picking the smallest or largest element).</p>
+
+        <div class="info-callout">
+          <p>This week&rsquo;s project: <strong>prj07 Quicksort</strong></p>
+          <p class="sub">You will implement quicksort from scratch!</p>
+        </div>
+      </section>
+
+      <!-- ── Comparative Analysis ───────────────────────────────── -->
+      <section class="section-card">
+        <h2>Comparative Analysis</h2>
+
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Algorithm</th>
+              <th>Best Case</th>
+              <th>Average Case</th>
+              <th>Worst Case</th>
+              <th>Space</th>
+              <th>Stable?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op-name">Bubble Sort</td>
+              <td class="good">O(n)</td>
+              <td class="bad">O(n&sup2;)</td>
+              <td class="bad">O(n&sup2;)</td>
+              <td class="good">O(1)</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td class="op-name">Selection Sort</td>
+              <td class="bad">O(n&sup2;)</td>
+              <td class="bad">O(n&sup2;)</td>
+              <td class="bad">O(n&sup2;)</td>
+              <td class="good">O(1)</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td class="op-name">Insertion Sort</td>
+              <td class="good">O(n)</td>
+              <td class="bad">O(n&sup2;)</td>
+              <td class="bad">O(n&sup2;)</td>
+              <td class="good">O(1)</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td class="op-name">Merge Sort</td>
+              <td class="good">O(n log n)</td>
+              <td class="good">O(n log n)</td>
+              <td class="good">O(n log n)</td>
+              <td class="bad">O(n)</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td class="op-name">Quick Sort</td>
+              <td class="good">O(n log n)</td>
+              <td class="good">O(n log n)</td>
+              <td class="bad">O(n&sup2;)</td>
+              <td class="good">O(log n)</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td class="op-name">Tree Sort</td>
+              <td class="good">O(n log n)</td>
+              <td class="good">O(n log n)</td>
+              <td class="bad">O(n&sup2;)*</td>
+              <td class="bad">O(n)</td>
+              <td>Yes</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style="font-size:0.82rem; color:var(--color-text-muted);">* Worst case for
+        tree sort assumes an unbalanced BST. Using <code>std::multiset</code> (red-black
+        tree) guarantees O(n&nbsp;log&nbsp;n) in all cases.</p>
+
+        <h3>Observations</h3>
+
+        <p><strong>Simple algorithms (Bubble, Selection, Insertion)</strong> are easy to
+        implement and perfectly reasonable for small datasets (roughly under 50 elements).
+        Among these, Insertion Sort stands out: its O(n) best case makes it surprisingly
+        fast on nearly-sorted data, which is why it appears as a base case in hybrid
+        algorithms.</p>
+
+        <p><strong>Divide-and-conquer algorithms (Merge Sort, Quick Sort)</strong> scale
+        much better to large datasets. Merge Sort gives consistent O(n&nbsp;log&nbsp;n)
+        at the cost of O(n) extra memory. Quick Sort is typically fastest in practice but
+        requires a good pivot strategy to avoid its O(n&sup2;) worst case.</p>
+
+        <p><strong>Tree Sort</strong> is most natural when your data is already tree-shaped
+        or when you need a sorted data structure anyway. Using <code>std::multiset</code>
+        makes the implementation almost trivially simple.</p>
+      </section>
+
+      <!-- ── Under the Hood ────────────────────────────────────── -->
+      <section class="section-card">
+        <h2>Under the Hood: <code>std::sort</code></h2>
+
+        <p>The C++ standard does not mandate a specific algorithm for
+        <code>std::sort</code>, only that it run in O(n&nbsp;log&nbsp;n) time. In practice,
+        most standard library implementations use a <strong>hybrid algorithm</strong> called
+        Introsort:</p>
+
+        <ul>
+          <li>Start with <strong>quicksort</strong> for its speed in the average case.</li>
+          <li>Switch to <strong>heapsort</strong> when recursion depth exceeds a threshold,
+          preventing the O(n&sup2;) worst case.</li>
+          <li>Switch to <strong>insertion sort</strong> when a partition shrinks below a
+          small threshold (typically around 16 elements), where its low overhead wins.</li>
+        </ul>
+
+        <p>After completing this module&rsquo;s project, try benchmarking your implementation
+        against <code>std::sort</code>. How do they compare? Share your results in the
+        course forum!</p>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 9 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Module 9 Overview</h1>
+      <p class="subtitle">Binary Heaps and Priority Queues</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>This Week&rsquo;s Focus</h2>
+        <p>Our top priority this week is exploring the <strong>binary heap</strong> as an
+        efficient implementation of the <strong>priority queue ADT</strong>.</p>
+
+        <p>A regular queue follows FIFO (first-in, first-out). A priority queue is different:
+        each element has a priority, and the highest-priority element is removed first.
+        The data does not need to be fully sorted at all times, but we must always be able
+        to identify the next highest-priority element efficiently.</p>
+
+        <div class="definition-box">
+          <strong>Key idea:</strong> Binary heaps give us the practical balance we want,
+          simple structure plus fast operations.
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2>Why Binary Heaps Work</h2>
+
+        <p>We can think of a binary heap as a binary tree (not a BST) with two core
+        invariants:</p>
+
+        <ol>
+          <li><strong>Heap-order property:</strong> In a min-heap, each parent is less than
+          or equal to its children. In a max-heap, each parent is greater than or equal to
+          its children. This guarantees the highest-priority element at the root.</li>
+          <li><strong>Complete-tree structure:</strong> Every level is full except possibly
+          the last, and nodes fill from left to right.</li>
+        </ol>
+
+        <p>That structural regularity is why heaps are usually stored in an array,
+        no links required.</p>
+
+        <div class="ops-grid">
+          <div class="op-card">
+            <h4>Peek Highest Priority</h4>
+            <p>Read the root element in O(1).</p>
+          </div>
+          <div class="op-card">
+            <h4>Insert</h4>
+            <p>Add at the end, then percolate up. Worst case O(log n), often near O(1).</p>
+          </div>
+          <div class="op-card">
+            <h4>Remove Highest Priority</h4>
+            <p>Swap root with last, remove last, then percolate down in O(log n).</p>
+          </div>
+        </div>
+
+        <div class="info-callout">
+          <p>This week&rsquo;s project: <strong>prj08 Heap</strong></p>
+          <p class="sub">Implement a min heap priority queue using an array
+          (<code>vector</code>) as the backing data store.</p>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2>Why Priority Queues Matter</h2>
+
+        <p>Priority queues appear everywhere: task scheduling, graph algorithms, pathfinding,
+        and game AI behavior systems. As we move forward in the course, we will revisit and leverage this structure in additional contexts.</p>
+
+        <p style="text-align:center; margin: 1.25rem 0 0.25rem;">
+          <img src="images/priority.jpeg"
+               alt=""
+               style="max-width:100%; border-radius:6px; box-shadow: 0 4px 16px rgba(0,0,0,0.18);">
+        </p>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

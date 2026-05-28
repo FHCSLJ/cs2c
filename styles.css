@@ -508,6 +508,11 @@ pre code {
   font-weight: 400;
 }
 
+.info-callout code {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
 /* ── Lists ───────────────────────────────────────────────── */
 ul, ol {
   padding-left: 1.4rem;

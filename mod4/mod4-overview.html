@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 4 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Module 4 Overview</h1>
+      <p class="subtitle">Matrix Multiplication for Dense and Sparse Matrices</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>From Storage to Algorithms</h2>
+
+        <p>In the last module, we implemented a <code>Matrix&lt;T&gt;</code> class using a
+        vector of vectors as the internal data store and a <code>Sparse_Matrix&lt;T&gt;</code>
+        class using a vector of linked lists.</p>
+
+        <p>The sparse representation let us save space for matrices made up primarily of a
+        default value. This week, we extend that work by implementing efficient matrix
+        multiplication for both dense and sparse matrices.</p>
+
+        <div class="definition-box">
+          <strong>Key idea:</strong> Different data structures lend themselves to different
+          algorithms. To design an efficient multiplication strategy, we need to understand
+          the strengths and weaknesses of the representation we chose.
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2>Why the Representation Matters</h2>
+
+        <p>A dense matrix stored as a vector of vectors makes row access straightforward and
+        predictable. A sparse matrix stored as linked lists can avoid wasting work on default
+        entries, but only if our algorithm is designed to take advantage of that sparsity.</p>
+
+        <div class="tree-type-grid">
+          <div class="tree-type-card">
+            <h3><code>Matrix&lt;T&gt;</code></h3>
+            <p>Dense storage favors direct indexed access and simple row-by-column
+            multiplication logic.</p>
+          </div>
+          <div class="tree-type-card">
+            <h3><code>Sparse_Matrix&lt;T&gt;</code></h3>
+            <p>Sparse storage can save both space and time, provided we avoid iterating over
+            entries that do not meaningfully contribute to the result.</p>
+          </div>
+        </div>
+
+        <p>That means the same mathematical operation, matrix multiplication, may call for
+        different implementation strategies depending on how the matrix is stored.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>Computing One Entry of the Product</h2>
+
+        <p>To compute a single entry in the product matrix, we combine one row from the left
+        matrix with one column from the right matrix. That row-by-column interaction is the
+        heart of matrix multiplication.</p>
+
+        <figure style="text-align:center; margin: 1.25rem 0 0.5rem;">
+          <img src="images/matrix_mult.png"
+               alt="Diagram showing matrix multiplication by combining one row of matrix A with one column of matrix B to compute a single entry in matrix C."
+               style="max-width:100%; border-radius:6px; box-shadow: 0 4px 16px rgba(0,0,0,0.18);">
+          <figcaption style="font-size:0.8rem; color:var(--color-text-muted); margin-top:0.75rem;">
+            Each output entry is computed from the dot product of one row of A and one
+            column of B.
+          </figcaption>
+        </figure>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

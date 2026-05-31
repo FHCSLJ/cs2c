@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 3 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Module 3 Overview</h1>
+      <p class="subtitle">Sparse Matrices and Space Complexity</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>A Different Kind of Constraint</h2>
+
+        <p>In the last module, we focused on a problem shaped by time complexity. This
+        week, we turn to a different challenge: space complexity.</p>
+
+        <p>Some data sets are expensive not because the calculations are especially difficult,
+        but because the straightforward representation wastes a large amount of memory. A
+        matrix is a good example. If most entries are the same default value, storing every
+        single position explicitly can be unnecessarily costly.</p>
+
+        <div class="definition-box">
+          <strong>Sparse matrix:</strong> A matrix in which most entries have the same
+          default value, so only a relatively small number of positions contain meaningful
+          data.
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2>Why Representation Matters</h2>
+
+        <p>For at least one important use case, we can reduce memory usage by changing the
+        internal data structure we use to store the matrix. Instead of treating every entry
+        as equally important, we can focus on the entries that actually carry information.</p>
+
+        <div class="tree-type-grid">
+          <div class="tree-type-card">
+            <h3>Dense Representation</h3>
+            <p>Store every entry directly. This keeps access simple, but it can waste space
+            when most values are just the default.</p>
+          </div>
+          <div class="tree-type-card">
+            <h3>Sparse Representation</h3>
+            <p>Store only the meaningful entries. This can save a great deal of memory, but
+            it usually makes the implementation and some operations more expensive.</p>
+          </div>
+        </div>
+
+        <div class="warning-callout">
+          Saving space usually comes with a cost. If we make storage more efficient, we are
+          often paying with extra time, added bookkeeping, or more complex algorithms.
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2>Seeing a Sparse Matrix</h2>
+
+        <p>The image below shows the basic idea: only a few positions contain non-default
+        values. When most of the matrix is empty, it makes sense to ask whether we should
+        really spend memory storing all of those repeated defaults.</p>
+
+        <figure style="text-align:center; margin: 1.25rem 0 0.5rem;">
+          <img src="images/sparse_matrix.jpg"
+               alt="Grid representing a sparse matrix, with only a few colored cells and most positions left at the default value."
+               style="max-width:100%; border-radius:6px; box-shadow: 0 4px 16px rgba(0,0,0,0.18);">
+          <figcaption style="font-size:0.8rem; color:var(--color-text-muted); margin-top:0.75rem;">
+            In a sparse matrix, only a small number of entries differ from the default value.
+          </figcaption>
+        </figure>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

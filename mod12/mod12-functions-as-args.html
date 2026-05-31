@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Functions as Arguments — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Functions as Arguments</h1>
+      <p class="subtitle">Function pointers, functors, lambdas, and <code>std::function</code> as algorithm callbacks.</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>The Big Picture</h2>
+
+        <div class="definition-box">
+          Many algorithms in the C++ Standard Library take functions or callable objects as
+          parameters. These callables are often used as predicates or comparison functions
+          to customize algorithm behavior.
+        </div>
+
+        <p>There are several ways to send functions themselves as arguments to other
+        functions, including function pointers, functors, lambda functions, and any callable
+        target wrapped in a <code>std::function</code> object.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>Function Pointer</h2>
+
+        <pre class="tree-diagram"><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+// Function to check if a number is greater than 3
+bool is_greater_than_three(int x)
+{
+    return x &gt; 3;
+}
+
+int main()
+{
+    std::vector&lt;int&gt; data = {1, 2, 3, 4, 5};
+
+    // Use std::find_if with a function pointer
+    auto it = std::find_if(data.begin(), data.end(), is_greater_than_three);
+
+    if (it != data.end())
+    {
+        std::cout &lt;&lt; "Found a number greater than 3 using function pointer: " &lt;&lt; *it &lt;&lt; std::endl;
+    }
+    else
+    {
+        std::cout &lt;&lt; "No number greater than 3 found using function pointer" &lt;&lt; std::endl;
+    }
+
+    return 0;
+}</code></pre>
+      </section>
+
+      <section class="section-card">
+        <h2>Functor</h2>
+
+        <pre class="tree-diagram"><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+struct GT_3
+{
+    bool operator()(int x) const
+    {
+        return x &gt; 3;
+    }
+};
+
+int main()
+{
+    std::vector&lt;int&gt; data = {1, 2, 3, 4, 5};
+
+    // Use std::find_if with a functor
+    auto it = std::find_if(data.begin(), data.end(), GT_3{});
+
+    if (it != data.end())
+    {
+        std::cout &lt;&lt; "Found a number greater than 3 using functor: " &lt;&lt; *it &lt;&lt; std::endl;
+    }
+    else
+    {
+        std::cout &lt;&lt; "No number greater than 3 found using functor" &lt;&lt; std::endl;
+    }
+
+    return 0;
+}</code></pre>
+      </section>
+
+      <section class="section-card">
+        <h2>Lambda Function</h2>
+
+        <pre class="tree-diagram"><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int main()
+{
+    std::vector&lt;int&gt; data = {1, 2, 3, 4, 5};
+
+    // Use std::find_if with a lambda function
+    auto it = std::find_if(data.begin(), data.end(), [](int x)
+    {
+        return x &gt; 3;
+    });
+
+    if (it != data.end())
+    {
+        std::cout &lt;&lt; "Found a number greater than 3 using lambda function: " &lt;&lt; *it &lt;&lt; std::endl;
+    }
+    else
+    {
+        std::cout &lt;&lt; "No number greater than 3 found using lambda function" &lt;&lt; std::endl;
+    }
+
+    return 0;
+}</code></pre>
+      </section>
+
+      <section class="section-card">
+        <h2><code>std::function</code></h2>
+
+        <pre class="tree-diagram"><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+
+int main()
+{
+    std::vector&lt;int&gt; data = {1, 2, 3, 4, 5};
+
+    // Use std::find_if with std::function
+    std::function&lt;bool(int)&gt; func = [](int x)
+    {
+        return x &gt; 3;
+    };
+
+    auto it = std::find_if(data.begin(), data.end(), func);
+
+    if (it != data.end())
+    {
+        std::cout &lt;&lt; "Found a number greater than 3 using std::function: " &lt;&lt; *it &lt;&lt; std::endl;
+    }
+    else
+    {
+        std::cout &lt;&lt; "No number greater than 3 found using std::function" &lt;&lt; std::endl;
+    }
+
+    return 0;
+}</code></pre>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

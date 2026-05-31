@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Pointers — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Smart Pointers</h1>
+      <p class="subtitle">Automatic lifetime management with <code>std::unique_ptr</code>, <code>std::shared_ptr</code>, and <code>std::weak_ptr</code>.</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>The Big Picture</h2>
+
+        <div class="definition-box">
+          <strong>Smart pointers</strong> help manage dynamic memory automatically,
+          ensuring proper resource deallocation and avoiding some of the pitfalls of manual
+          memory management.
+        </div>
+
+        <p>Modern C++ provides several smart pointer types with different ownership models.
+        The three most important are <code>std::unique_ptr</code>,
+        <code>std::shared_ptr</code>, and <code>std::weak_ptr</code>.</p>
+      </section>
+
+      <section class="section-card">
+        <h2><code>std::unique_ptr</code></h2>
+
+        <p>A <code>std::unique_ptr</code> owns a dynamically allocated object exclusively.
+        It cannot be copied, but it can be moved. When the smart pointer goes out of scope,
+        the resource is automatically destroyed.</p>
+
+        <pre class="tree-diagram"><code>#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+int main()
+{
+    size_t size = 10; // could be determined at runtime
+    std::unique_ptr&lt;int[]&gt; arr(new int[size]);
+
+    for (size_t i = 0; i &lt; size; ++i)
+    {
+        arr[i] = i * i;
+    }
+
+    for (size_t i = 0; i &lt; size; ++i)
+    {
+        std::cout &lt;&lt; arr[i] &lt;&lt; " ";
+    }
+
+    std::cout &lt;&lt; std::endl;
+    // No need to delete[] arr, it will be automatically deallocated
+}</code></pre>
+      </section>
+
+      <section class="section-card">
+        <h2><code>std::shared_ptr</code></h2>
+
+        <p>A <code>std::shared_ptr</code> uses reference counting so multiple parts of a
+        program can share ownership of the same resource. The resource is deallocated when
+        the last owning <code>shared_ptr</code> is destroyed.</p>
+
+        <pre class="tree-diagram"><code>#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+class Resource
+{
+public:
+    Resource() { std::cout &lt;&lt; "Resource acquired\n"; }
+    ~Resource() { std::cout &lt;&lt; "Resource destroyed\n"; }
+    void do_important_things() { std::cout &lt;&lt; "Doing important things!\n"; }
+};
+
+void use_resource(std::shared_ptr&lt;Resource&gt; resource)
+{
+    resource-&gt;do_important_things();
+}
+
+int main()
+{
+    std::shared_ptr&lt;Resource&gt; res1 = std::make_shared&lt;Resource&gt;();
+    std::cout &lt;&lt; "Resource use count: " &lt;&lt; res1.use_count() &lt;&lt; std::endl;
+    use_resource(res1);
+
+    // separate scope in which to share the shared_ptr
+    {
+        std::shared_ptr&lt;Resource&gt; res2 = res1;
+        std::cout &lt;&lt; "Resource use count: " &lt;&lt; res1.use_count() &lt;&lt; std::endl;
+        use_resource(res2);
+    }
+
+    std::cout &lt;&lt; "Resource use count: " &lt;&lt; res1.use_count() &lt;&lt; std::endl;
+}</code></pre>
+
+        <p>Expected output:</p>
+
+        <pre class="tree-diagram"><code>Resource acquired
+Resource use count: 1
+Doing important things!
+Resource use count: 2
+Doing important things!
+Resource use count: 1
+Resource destroyed</code></pre>
+      </section>
+
+      <section class="section-card">
+        <h2><code>std::weak_ptr</code></h2>
+
+        <p>A <code>std::weak_ptr</code> holds a non-owning reference to a resource managed
+        by <code>std::shared_ptr</code>. It is especially useful for observing a shared
+        resource without extending its lifetime and for avoiding circular ownership.</p>
+
+        <pre class="tree-diagram"><code>#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+class Resource
+{
+public:
+    Resource() { std::cout &lt;&lt; "Resource acquired\n"; }
+    ~Resource() { std::cout &lt;&lt; "Resource destroyed\n"; }
+    void do_important_things() { std::cout &lt;&lt; "Doing important things!\n"; }
+};
+
+void observe_resource(std::weak_ptr&lt;Resource&gt; weak_res)
+{
+    if (std::shared_ptr&lt;Resource&gt; res = weak_res.lock())
+    {
+        std::cout &lt;&lt; "Using weak_ptr: Resource is still alive\n";
+        res-&gt;do_important_things();
+    }
+    else
+    {
+        std::cout &lt;&lt; "Using weak_ptr: Resource has been destroyed, can't do important things -- must not be that important.\n";
+    }
+}
+
+int main()
+{
+    std::shared_ptr&lt;Resource&gt; res1 = std::make_shared&lt;Resource&gt;();
+    std::weak_ptr&lt;Resource&gt; weak_res = res1;
+
+    observe_resource(weak_res);
+
+    res1.reset();
+
+    observe_resource(weak_res);
+
+    return 0;
+}</code></pre>
+
+        <p>Expected output:</p>
+
+        <pre class="tree-diagram"><code>Resource acquired
+Using weak_ptr: Resource is still alive
+Doing important things!
+Resource destroyed
+Using weak_ptr: Resource has been destroyed, can't do important things -- must not be that important.</code></pre>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 2 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Module 2 Overview</h1>
+      <p class="subtitle">Subset Sum, Search Pruning, and Templates</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>A First Hard Problem</h2>
+
+        <p>In this module, we begin working with algorithm analysis by studying a problem that
+        becomes difficult very quickly: the subset sum problem. Given a collection of
+        elements, we want to find a subset that best satisfies some constraint.</p>
+
+        <p>The challenge is that the straightforward brute force approach grows exponentially.
+        As the number of elements in the main collection increases, the number of candidate
+        subsets grows like 2^N, which means the naive solution becomes impractical fast.</p>
+
+        <div class="warning-callout">
+          A problem can feel manageable at small sizes and still become unusable at larger
+          sizes. That is exactly why algorithm analysis matters.
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2>Pruning the Search Space</h2>
+
+        <p>Rather than examining every possible subset equally, we will explore ways to prune
+        the search space. The goal is not to change the underlying difficulty of the problem,
+        but to avoid work that is clearly unnecessary.</p>
+
+        <div class="definition-box">
+          <strong>Search-space pruning:</strong> Narrowing the set of cases we explore so the
+          algorithm can skip branches that cannot lead to a better answer.
+        </div>
+
+        <p>These strategies help keep the algorithm useful for more realistic input sizes,
+        even when the full brute force version would scale poorly.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>Templates and Reusable Algorithms</h2>
+
+        <p>This module also revisits C++ templates. Templates let us generalize our code so
+        that the subset sum algorithm is not locked to a single concrete type.</p>
+
+        <p>Instead, we can design functions and classes that work with any datatype that meets
+        the required operations. When a specific type is used, the compiler generates the
+        concrete version we need from the template.</p>
+
+        <p>That gives us two useful ideas at once: better ways to think about algorithmic cost,
+        and better tools for writing reusable C++ code.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>Representing Candidate Subsets</h2>
+
+        <p>One practical way to represent a subset is to store indices that point into a main
+        collection. This lets multiple candidate subsets refer back to the same underlying
+        elements without duplicating the full data each time.</p>
+
+        <figure style="text-align:center; margin: 1.25rem 0 0.5rem;">
+          <img src="images/subset-edit.jpg"
+               alt="Diagram showing several subsets represented by index lists that point into a main collection of elements."
+               style="max-width:100%; border-radius:6px; box-shadow: 0 4px 16px rgba(0,0,0,0.18);">
+          <figcaption style="font-size:0.8rem; color:var(--color-text-muted); margin-top:0.75rem;">
+            Candidate subsets can be represented by indices into a main collection rather than
+            by duplicating every element.
+          </figcaption>
+        </figure>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>

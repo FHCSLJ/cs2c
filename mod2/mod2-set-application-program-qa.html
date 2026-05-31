@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Set Application Program Q&amp;A — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Set Application Program Q&amp;A</h1>
+      <p class="subtitle">Test-driving <code>Set&lt;T&gt;</code> and understanding how the same class can act as both solver and solution.</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>The Main Question</h2>
+
+        <p>A common point of confusion is what the <code>Set&lt;T&gt;</code> object is doing from the
+        user&rsquo;s point of view. The user owns the original collection of elements, creates a
+        <code>Set&lt;T&gt;</code> that can reason about that collection, and then asks it to solve the
+        subset sum problem.</p>
+
+        <div class="definition-box">
+          <strong>Key idea:</strong> The same <code>Set&lt;T&gt;</code> class can appear in more than one
+          role. One object can help search for the best subset, while another <code>Set&lt;T&gt;</code>
+          object can represent the subset that was found.
+        </div>
+
+        <p>That may feel unusual at first, but it is perfectly reasonable. A single class can be
+        designed to both do work and represent results, provided its interface supports both jobs.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>A Simple Test Drive</h2>
+
+        <p>Here is a straightforward example that you could try from <code>src/main.cpp</code> in
+        your project:</p>
+
+        <pre class="tree-diagram"><code>int main(int, char**)
+{
+    std::vector&lt;int&gt; all_the_things = {2, 5, 9, 4, 1};
+    Set&lt;int&gt; set(&amp;all_the_things);
+
+    size_t target = 10;
+    Set&lt;int&gt; best_set = set.find_biggest_subset_le(target);
+
+    std::cout &lt;&lt; "Sum: " &lt;&lt; best_set.get_sum() &lt;&lt; std::endl;
+    std::cout &lt;&lt; best_set &lt;&lt; std::endl;
+}</code></pre>
+
+        <p>Expected output:</p>
+
+        <pre class="tree-diagram"><code>Sum: 10
+{
+ 9
+ 1
+}</code></pre>
+
+        <p>This example shows the dual use of the class:</p>
+
+        <ul>
+          <li><code>set</code> is the object that knows how to solve the subset sum problem using the original collection.</li>
+          <li><code>best_set</code> is the object that represents the subset returned as the answer.</li>
+        </ul>
+
+        <p>Depending on how you implemented the class, the solver object may mainly reference the
+        original collection while other <code>Set&lt;T&gt;</code> objects represent candidate subsets during
+        the search. The important point is not the exact private layout, but that the public interface
+        allows both roles to make sense.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>Using <code>Set&lt;T&gt;</code> with a Custom Type</h2>
+
+        <p>The subset sum machinery is more interesting once we remember that templates let us work
+        with types other than <code>int</code>. If the type supports the operations your implementation
+        expects, the same <code>Set&lt;T&gt;</code> design can work with user-defined objects too.</p>
+
+        <pre class="tree-diagram"><code>class Fancy_Class
+{
+private:
+    int _value;
+    std::string _name;
+
+public:
+    Fancy_Class(int value, std::string name = "") : _value(value), _name(name) {}
+
+    int get_value() const { return _value; }
+    std::string get_name() const { return _name; }
+};
+
+Fancy_Class operator+(const Fancy_Class&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    int combined_value = lhs.get_value() + rhs.get_value();
+    std::string combined_name = lhs.get_name() + " &amp; " + rhs.get_name();
+    return Fancy_Class(combined_value, combined_name);
+}
+
+int&amp; operator+=(int&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    lhs += rhs.get_value();
+    return lhs;
+}
+
+size_t&amp; operator+=(size_t&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    lhs += rhs.get_value();
+    return lhs;
+}
+
+bool operator&lt;(const Fancy_Class&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    return lhs.get_value() &lt; rhs.get_value();
+}
+
+bool operator&lt;=(const Fancy_Class&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    return lhs.get_value() &lt;= rhs.get_value();
+}
+
+bool operator&gt;(const Fancy_Class&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    return lhs.get_value() &gt; rhs.get_value();
+}
+
+bool operator&gt;=(const Fancy_Class&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    return lhs.get_value() &gt;= rhs.get_value();
+}
+
+bool operator==(const Fancy_Class&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    return lhs.get_value() == rhs.get_value();
+}
+
+bool operator!=(const Fancy_Class&amp; lhs, const Fancy_Class&amp; rhs)
+{
+    return lhs.get_value() != rhs.get_value();
+}
+
+std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, const Fancy_Class&amp; obj)
+{
+    return os &lt;&lt; "Fancy_Class { value: "
+              &lt;&lt; obj.get_value()
+              &lt;&lt; ", name: "
+              &lt;&lt; obj.get_name()
+              &lt;&lt; " }";
+}
+
+int main(int, char**)
+{
+    std::vector&lt;Fancy_Class&gt; all_the_things = {
+        {1, "thing1"},
+        {3, "thing3"},
+        {5, "thing5"}
+    };
+
+    Set&lt;Fancy_Class&gt; set(&amp;all_the_things);
+
+    size_t target = 6;
+    Set&lt;Fancy_Class&gt; best_set = set.find_biggest_subset_le(target);
+
+    std::cout &lt;&lt; "Sum: " &lt;&lt; best_set.get_sum() &lt;&lt; std::endl;
+    std::cout &lt;&lt; best_set &lt;&lt; std::endl;
+}</code></pre>
+
+        <p>Expected output:</p>
+
+        <pre class="tree-diagram"><code>Sum: 6
+{
+ Fancy_Class { value: 1, name: thing1 }
+ Fancy_Class { value: 5, name: thing5 }
+}</code></pre>
+
+        <p>This is a useful review of operator overloading and template requirements. The template
+        does not care that the elements are instances of <code>Fancy_Class</code>. It cares whether the
+        required operations are available.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>An Alternative: Implicit Conversion</h2>
+
+        <p>Another possible approach is to define a conversion operator and let the object convert
+        itself to a numeric type when needed. That can be convenient, though it can also make code
+        behavior less explicit.</p>
+
+        <pre class="tree-diagram"><code>class Fancy_Class
+{
+private:
+    size_t _value;
+    std::string _name;
+
+public:
+    Fancy_Class(size_t value, std::string name) : _value(value), _name(name) {}
+
+    size_t get_value() const { return _value; }
+    std::string get_name() const { return _name; }
+
+    operator size_t() const
+    {
+        return _value;
+    }
+};</code></pre>
+
+        <div class="warning-callout">
+          Implicit conversions can reduce boilerplate, but they can also hide what the program is
+          doing. They are convenient, but they should be used carefully.
+        </div>
+
+        <p>If your <code>Set&lt;T&gt;</code> implementation is written with this sort of flexibility in mind,
+        then this style may also work. It is a good example of how template design and operator design
+        interact.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>Takeaways</h2>
+
+        <ul>
+          <li>The user owns the original collection of elements.</li>
+          <li>A <code>Set&lt;T&gt;</code> object can act as a solver for the subset sum problem.</li>
+          <li>The returned answer can also be represented as a <code>Set&lt;T&gt;</code> object.</li>
+          <li>Generic code works only when the element type supports the operations the template expects.</li>
+        </ul>
+
+        <p>If this page raises more questions than it answers, that is useful too. It usually means you
+        are starting to see how template requirements, class design, and user-facing APIs fit together.</p>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+
+</body>
+</html>

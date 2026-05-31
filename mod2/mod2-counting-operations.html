@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counting Operations Examples — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Counting Operations Examples</h1>
+      <p class="subtitle">From exact counts to Big O intuition in algorithm analysis.</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>What Is Algorithm Analysis?</h2>
+
+        <div class="definition-box">
+          <strong>Algorithm analysis</strong> is the process of evaluating the efficiency of
+          an algorithm in terms of the time and space it requires as the input grows.
+        </div>
+
+        <p>In this introduction, we focus primarily on time complexity, or how runtime grows
+        as the input size increases. The goal is not to predict the exact number of clock
+        cycles on a particular machine, but to build a useful model for comparing approaches.</p>
+
+        <p>That is why algorithm analysis helps us reason about questions like this without
+        having to implement and benchmark every possible solution:</p>
+
+        <ul>
+          <li>How does linear search behave as the input gets larger?</li>
+          <li>When is binary search a meaningfully better choice?</li>
+          <li>When is code optimization helpful, and when does the real win come from choosing a different algorithm?</li>
+        </ul>
+      </section>
+
+      <section class="section-card">
+        <h2>Counting Operations</h2>
+
+        <p>The first step in analyzing algorithms is counting the operations the computer must
+        perform. That sounds simple, but it immediately raises a subtle question: what should
+        count as one operation? The answer depends on the level of abstraction we choose.</p>
+
+        <h3>Example 1: Print a Single Value</h3>
+
+        <pre class="tree-diagram"><code>void print_value(int x)
+{
+    std::cout &lt;&lt; x;
+}</code></pre>
+
+        <p><strong>Operations count:</strong></p>
+        <ul>
+          <li>Print operation: 1 operation</li>
+          <li>Implicit return from the function: 1 operation</li>
+        </ul>
+        <p><strong>Total:</strong> 2 operations</p>
+
+        <div class="warning-callout">
+          Even a statement that feels simple, such as <code>std::cout &lt;&lt; x</code>, hides
+          internal work. As we move toward Big O notation, we will stop caring about every
+          detail and focus more on growth rate than exact counts.
+        </div>
+
+        <h3>Example 2: Sum Two Numbers</h3>
+
+        <pre class="tree-diagram"><code>int add(int a, int b)
+{
+    return a + b;
+}</code></pre>
+
+        <p><strong>Operations count:</strong></p>
+        <ul>
+          <li>Addition: 1 operation</li>
+          <li>Return statement: 1 operation</li>
+        </ul>
+        <p><strong>Total:</strong> 2 operations</p>
+
+        <h3>Exercise A</h3>
+
+        <p>Count the number of operations in the following function:</p>
+
+        <pre class="tree-diagram"><code>int sum_three(int a, int b, int c)
+{
+    int temp = a + b;
+    return temp + c;
+}</code></pre>
+
+        <details>
+          <summary>Answer</summary>
+          <p>This function performs several operations:</p>
+          <ul>
+            <li>Addition: <code>a + b</code> (1 operation)</li>
+            <li>Assignment: <code>temp = a + b</code> (1 operation)</li>
+            <li>Addition: <code>temp + c</code> (1 operation)</li>
+            <li>Return statement: 1 operation</li>
+          </ul>
+          <p><strong>Total:</strong> 4 operations</p>
+          <p>As a learning exercise, it is useful to count everything. In practice, we often
+          focus on the operations that dominate the running time or are most relevant to the
+          problem domain.</p>
+        </details>
+      </section>
+
+      <section class="section-card">
+        <h2>Loops and Growth</h2>
+
+        <p>The real power of algorithm analysis shows up once we start examining loops. Loops
+        are where running time begins to scale with input size.</p>
+
+        <h3>Example 3: Sum an Array</h3>
+
+        <pre class="tree-diagram"><code>int sum_array(int arr[], int n)
+{
+    int sum = 0;
+    for (int i = 0; i &lt; n; i++)
+    {
+        sum += arr[i];
+    }
+    return sum;
+}</code></pre>
+
+        <p><strong>Operations analysis:</strong></p>
+        <ul>
+          <li>Variable initialization: 2 operations</li>
+          <li>Loop condition checks: <code>n + 1</code> operations</li>
+          <li>Loop counter increments: <code>n</code> operations</li>
+          <li>Array accesses: <code>n</code> operations</li>
+          <li>Addition and assignment: <code>2n</code> operations</li>
+          <li>Return statement: 1 operation</li>
+        </ul>
+        <p><strong>Total:</strong> <code>5n + 4</code> operations</p>
+
+        <p>This is a good example of why exact counting is a stepping stone rather than the end
+        goal. Once we see the linear pattern, the key idea becomes that this algorithm grows
+        proportionally with <code>n</code>.</p>
+
+        <h3>Exercise B</h3>
+
+        <p>Count the operations in this function that finds the maximum value in an array:</p>
+
+        <pre class="tree-diagram"><code>int find_max(int arr[], int n)
+{
+    int max = arr[0];
+    for (int i = 1; i &lt; n; i++)
+    {
+        if (arr[i] &gt; max)
+        {
+            max = arr[i];
+        }
+    }
+    return max;
+}</code></pre>
+
+        <details>
+          <summary>Answer</summary>
+          <p>This function performs these operations:</p>
+          <ul>
+            <li>Initial array access and assignment: 2 operations</li>
+            <li>Loop initialization: 1 operation</li>
+            <li>Loop condition checks: <code>n</code> operations</li>
+            <li>Loop counter increments: <code>n - 1</code> operations</li>
+            <li>Array accesses in the conditional: <code>n - 1</code> operations</li>
+            <li>Comparisons in the conditional: <code>n - 1</code> operations</li>
+            <li>Array accesses in the body: up to <code>n - 1</code> operations</li>
+            <li>Assignments in the body: up to <code>n - 1</code> operations</li>
+            <li>Return statement: 1 operation</li>
+          </ul>
+          <p><strong>Worst case:</strong> if the array is in ascending order, every conditional
+          succeeds, so the total is <code>6n - 1</code> operations.</p>
+          <p><strong>Best case:</strong> if the first element is already the maximum, the body
+          never executes, so the total is <code>4n + 1</code> operations.</p>
+        </details>
+
+        <h3>Example 4: Print All Pairs</h3>
+
+        <pre class="tree-diagram"><code>void print_pairs(int arr[], int n)
+{
+    for (int i = 0; i &lt; n; i++)
+    {
+        for (int j = 0; j &lt; n; j++)
+        {
+            std::cout &lt;&lt; arr[i] &lt;&lt; "," &lt;&lt; arr[j] &lt;&lt; std::endl;
+        }
+    }
+}</code></pre>
+
+        <p><strong>Operations analysis:</strong></p>
+        <ul>
+          <li>Outer loop initialization: 1 operation</li>
+          <li>Outer loop condition checks: <code>n + 1</code> operations</li>
+          <li>Outer loop increments: <code>n</code> operations</li>
+          <li>Inner loop initialization: <code>n</code> operations</li>
+          <li>Inner loop condition checks: <code>n(n + 1)</code> operations</li>
+          <li>Inner loop increments: <code>n^2</code> operations</li>
+          <li>Array accesses: <code>2n^2</code> operations</li>
+          <li>Print operations: <code>4n^2</code> operations</li>
+          <li>Implicit return from the function: 1 operation</li>
+        </ul>
+        <p><strong>Total:</strong> <code>8n^2 + 4n + 3</code> operations</p>
+
+        <p>In Big O notation, this becomes <code>O(n^2)</code> because the quadratic term is what
+        dominates as <code>n</code> grows.</p>
+
+        <h3>Exercise C</h3>
+
+        <p>Count the operations in this function that checks whether an array contains duplicate
+        values. This example is intentionally messier, because realistic counts can be much
+        harder to pin down exactly than the earlier examples suggest.</p>
+
+        <pre class="tree-diagram"><code>bool has_duplicates(int arr[], int n)
+{
+    for (int i = 0; i &lt; n; i++)
+    {
+        for (int j = i + 1; j &lt; n; j++)
+        {
+            if (arr[i] == arr[j])
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}</code></pre>
+
+        <details>
+          <summary>Answer</summary>
+          <p>This function performs these operations:</p>
+          <ul>
+            <li>Outer loop initialization: 1 operation</li>
+            <li>Outer loop condition checks: up to <code>n + 1</code> operations</li>
+            <li>Outer loop increments: up to <code>n</code> operations</li>
+            <li>Inner loop initialization: up to <code>2n</code> operations</li>
+            <li>Inner loop condition checks: up to <code>(n^2 + n) / 2</code> operations</li>
+            <li>Inner loop increments: up to <code>(n^2 - n) / 2</code> operations</li>
+            <li>Array accesses in the comparison: up to <code>n^2 - n</code> operations</li>
+            <li>Equality comparisons: up to <code>(n^2 - n) / 2</code> operations</li>
+            <li>Return statement: 1 operation</li>
+          </ul>
+
+          <p><strong>Worst case:</strong> no duplicates are found, so we perform all iterations.
+          The inner loop runs <code>(n - 1) + (n - 2) + ... + 1 = n(n - 1) / 2</code> times, giving
+          an approximate total of <code>5n^2 / 2 + 5n / 2 + 3</code> operations, which is
+          <code>O(n^2)</code>.</p>
+
+          <p><strong>Best case:</strong> a duplicate is found immediately in the first comparison,
+          so the work is constant, or <code>O(1)</code>.</p>
+
+          <p>For a helpful visualization of the triangular-number series behind these counts,
+          see <a href="https://r-knott.surrey.ac.uk/runsums/triNbproof.html" target="_blank" rel="noopener noreferrer">this geometric explanation of triangular numbers</a>.</p>
+        </details>
+      </section>
+
+      <section class="section-card">
+        <h2>Big O Notation</h2>
+
+        <p>Rather than counting exact operations forever, computer scientists use asymptotic
+        notation, especially Big O notation, to describe how algorithms scale.</p>
+
+        <div class="ops-grid">
+          <div class="op-card">
+            <h3>O(1)</h3>
+            <p>Constant time, the work does not grow with the input size.</p>
+          </div>
+          <div class="op-card">
+            <h3>O(log n)</h3>
+            <p>Logarithmic time, growth is very slow even as the input becomes large.</p>
+          </div>
+          <div class="op-card">
+            <h3>O(n)</h3>
+            <p>Linear time, work grows in direct proportion to the input size.</p>
+          </div>
+          <div class="op-card">
+            <h3>O(n log n)</h3>
+            <p>Linearithmic time, common in efficient comparison-based sorting algorithms.</p>
+          </div>
+          <div class="op-card">
+            <h3>O(n^2)</h3>
+            <p>Quadratic time, often appears in nested-loop algorithms.</p>
+          </div>
+          <div class="op-card">
+            <h3>O(2^n)</h3>
+            <p>Exponential time, growth becomes impractical very quickly.</p>
+          </div>
+        </div>
+
+        <p>Revisiting the earlier examples:</p>
+        <ul>
+          <li>Print a value: <code>O(1)</code></li>
+          <li>Sum two numbers: <code>O(1)</code></li>
+          <li>Sum an array: <code>O(n)</code></li>
+          <li>Print all pairs: <code>O(n^2)</code></li>
+        </ul>
+      </section>
+
+      <section class="section-card">
+        <h2>Code Optimization vs. Algorithm Selection</h2>
+
+        <p>It is important to separate two different ideas. Code optimization improves constant
+        factors without changing the overall scaling behavior. Algorithm selection changes the
+        fundamental approach and can dramatically change how runtime grows.</p>
+
+        <h3>Optimization Example</h3>
+
+        <pre class="tree-diagram"><code>// Unoptimized
+for (int i = 0; i &lt; n; i++)
+{
+    for (int j = 0; j &lt; n; j++)
+    {
+        result[i][j] = a[i][j] + b[i][j];
+    }
+}
+
+// Optimized
+for (int i = 0; i &lt; n; i++)
+{
+    int* result_row = result[i];
+    int* a_row = a[i];
+    int* b_row = b[i];
+    for (int j = 0; j &lt; n; j++)
+    {
+        result_row[j] = a_row[j] + b_row[j];
+    }
+}</code></pre>
+
+        <p><strong>Approximate totals:</strong></p>
+        <ul>
+          <li>Unoptimized version: <code>10n^2 + 4n + 3</code> operations</li>
+          <li>Optimized version: <code>7n^2 + 10n + 3</code> operations</li>
+        </ul>
+
+        <p>Both versions are still <code>O(n^2)</code>. The optimization changes the constant factor,
+        not the asymptotic growth rate.</p>
+
+        <h3>Algorithm Selection Example</h3>
+
+        <pre class="tree-diagram"><code>// Linear search - O(n)
+bool linear_search(int arr[], int n, int target)
+{
+    for (int i = 0; i &lt; n; i++)
+    {
+        if (arr[i] == target)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Binary search - O(log n)
+bool binary_search(int arr[], int n, int target)
+{
+    int left = 0, right = n - 1;
+    while (left &lt;= right)
+    {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target)
+        {
+            return true;
+        }
+        if (arr[mid] &lt; target)
+        {
+            left = mid + 1;
+        }
+        else
+        {
+            right = mid - 1;
+        }
+    }
+    return false;
+}</code></pre>
+
+        <p><strong>Worst-case totals:</strong></p>
+        <ul>
+          <li>Linear search: about <code>4n + 3</code> operations, or <code>O(n)</code></li>
+          <li>Binary search: about <code>11 log2(n) + 4</code> operations, or <code>O(log n)</code></li>
+        </ul>
+
+        <p>For <code>n = 1,000,000</code>, that is the difference between roughly 4,000,003 operations
+        and about 220 operations. That gap is why algorithm selection matters so much more than
+        small optimizations when inputs become large.</p>
+
+        <h3>Exercise D</h3>
+
+        <p>Analyze the time complexity of these two functions that compute the sum of all
+        elements in a 2D matrix:</p>
+
+        <pre class="tree-diagram"><code>// Approach 1
+int sum_2d_array_1(int matrix[100][100], int n)
+{
+    int sum = 0;
+    for (int i = 0; i &lt; n; i++)
+    {
+        for (int j = 0; j &lt; n; j++)
+        {
+            sum += matrix[i][j];
+        }
+    }
+    return sum;
+}
+
+// Approach 2
+int sum_2d_array_2(int matrix[100][100], int n)
+{
+    int sum = 0;
+    for (int i = 0; i &lt; n; i++)
+    {
+        int row_sum = 0;
+        for (int j = 0; j &lt; n; j++)
+        {
+            row_sum += matrix[i][j];
+        }
+        sum += row_sum;
+    }
+    return sum;
+}</code></pre>
+
+        <details>
+          <summary>Answer</summary>
+          <p><strong>Approach 1:</strong> <code>6n^2 + 4n + 4</code> operations</p>
+          <p><strong>Approach 2:</strong> <code>6n^2 + 7n + 4</code> operations</p>
+          <p>Both functions are <code>O(n^2)</code>. The difference in exact counts is small compared
+          with the dominant quadratic term. Approach 2 may perform better on real hardware due
+          to cache behavior, but it does not change the asymptotic complexity.</p>
+        </details>
+      </section>
+
+      <section class="section-card">
+        <h2>Conclusion</h2>
+
+        <p>Algorithm analysis is about understanding how performance scales with input size.</p>
+
+        <ul>
+          <li>Code optimization can improve constant factors.</li>
+          <li>Algorithm selection can change the growth rate entirely.</li>
+        </ul>
+
+        <p>For small inputs, both can matter. As inputs grow, choosing the right algorithm
+        becomes far more important than trying to fine-tune an inherently inefficient one.</p>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+
+</body>
+</html>

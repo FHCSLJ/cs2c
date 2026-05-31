@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 10 Overview — CS2C</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="page-header">
+      <div class="course-label">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2
+                   m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        CS2C: Advanced Data Structures &amp; Algorithms in C++
+      </div>
+      <h1>Module 10 Overview</h1>
+      <p class="subtitle">Graphs and Graph Algorithms</p>
+    </header>
+
+    <main class="content">
+
+      <section class="section-card">
+        <h2>This Week&rsquo;s Focus</h2>
+
+        <p>This week we dive into the fascinating domain of <strong>graphs</strong> and
+        <strong>graph algorithms</strong>. Graphs give us a way to model relationships,
+        networks, routes, dependencies, and movement through a system.</p>
+
+        <div class="definition-box">
+          <strong>Graph:</strong> A structure made of <em>vertices</em> (nodes) and
+          <em>edges</em> connecting them. Graphs can represent roads between cities,
+          links in a communication network, dependencies among tasks, or transitions in
+          a game world.
+        </div>
+
+        <p>Our goal is to become familiar with some of the most canonical graph problems
+        and the algorithms designed to solve them efficiently.</p>
+      </section>
+
+      <section class="section-card">
+        <h2>Two Canonical Problems</h2>
+
+        <div class="tree-type-grid">
+          <div class="tree-type-card">
+            <h3>Dijkstra&rsquo;s Algorithm</h3>
+            <p>Find the <strong>shortest weighted path</strong> in a graph. This is the
+            classic route-optimization problem: given a starting point and edge weights,
+            what is the cheapest or shortest way to reach a destination?</p>
+          </div>
+          <div class="tree-type-card">
+            <h3>Ford-Fulkerson Method</h3>
+            <p>Find the <strong>maximum flow</strong> through a network. This models
+            situations such as bandwidth, traffic capacity, or any system where limited
+            capacity moves through connected channels.</p>
+          </div>
+        </div>
+
+        <p>Together, these problems show why graphs matter: sometimes we care about the
+        best path through a network, and sometimes we care about how much can move through
+        it.</p>
+
+        <div class="info-callout">
+          <p>Final project: <strong>prj09 Graph Algos</strong></p>
+          <p class="sub">You will solve both of these canonical problems, and more, as
+          you implement graph algorithms from scratch.</p>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2>Dijkstra in Action</h2>
+
+        <p>The diagram below illustrates one step in working through Dijkstra&rsquo;s
+        algorithm: tracking visited nodes, predecessor information, tentative distances,
+        and the next candidates in the priority queue.</p>
+
+        <figure style="text-align:center; margin: 1.25rem 0 0.5rem;">
+          <img src="images/graph_algos.png"
+               alt="Worked example of Dijkstra's algorithm on a weighted directed graph, showing the priority queue, visited nodes, predecessor table, and current shortest path information."
+               style="max-width:100%; border-radius:6px; box-shadow: 0 4px 16px rgba(0,0,0,0.18);">
+          <figcaption style="font-size:0.8rem; color:var(--color-text-muted); margin-top:0.75rem;">
+            A worked snapshot of Dijkstra&rsquo;s algorithm, with the graph on the left and the
+            evolving bookkeeping structures on the right.
+          </figcaption>
+        </figure>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">
+      &copy; 2026 Lane Johnson.
+      Licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">
+        CC BY-NC-ND 4.0
+      </a>.<br>
+      Made in collaboration with AI tools. Errors are possible, even probable.
+      Please raise questions in our course Q&amp;A &mdash; and thank you!
+    </footer>
+
+  </div>
+</body>
+</html>
